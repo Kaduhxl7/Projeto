@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DressCode - Início</title>
+
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"/>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f2ef;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+       height: 70px;  
+       background-color: #ffffff;
+       padding: 1rem 2rem;
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       border-bottom: 2px solid #e1d8d8;
+       box-sizing: border-box;
+       padding: 0 2rem;
+    }
+
+    .logo img {
+      height: 260px; /* altura da logo, pode ajustar */
+      margin-top: 5px;
+      width: auto;
+      display: block;
+}
+    nav a {
+      margin: 0 1rem;
+      color: #5e2b2b;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .destaques {
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+
+    .destaques h2 {
+      color: #5e2b2b;
+      margin-bottom: 1rem;
+    }
+
+    .swiper {
+      width: 85%;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .swiper-slide img {
+      width: 100%;
+      height: 600px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .baseado-em-voce, .artigos {
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+
+    .baseado-em-voce h2,
+    .artigos h2 {
+      color: #5e2b2b;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 250px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .card p {
+      padding: 0.5rem;
+      background-color: #5e2b2b;
+      color: white;
+      font-weight: bold;
+    }
+
+    .artigo {
+      background-color: #b17979;
+      color: white;
+      padding: 1rem;
+      border-radius: 10px;
+      max-width: 400px;
+    }
+
+    .artigo button {
+      background: #fff;
+      color: #5e2b2b;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background 0.3s;
+    }
+
+    .artigo button:hover {
+      background: #e6e6e6;
+    }
+
+    .artigos .cards {
+      gap: 2rem;
+    }
+
+    footer {
+      background: #fff;
+      padding: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      font-size: 0.9rem;
+      color: #5e2b2b;
+      border-top: 1px solid #ccc;
+    }
+
+    @media (max-width: 768px) {
+      .cards {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    .search-box {
+  background-color: #b19a9a;
+  border-radius: 30px;
+  padding: 0.4rem 1rem;
+  display: flex;
+  align-items: center;
+  width: 200px;
+  margin-left: 1rem;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.search-box .search-icon {
+  color: #5e2b2b;
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+
+
+</style>
+</head>
+<body>
+
+  <header>
+  <div class="logo">
+  <img src="logo.png" alt="DressCode Logo"/></div>
+  <nav>
+    <a href="#">Feminino</a>
+    <a href="#">Masculino</a>
+    <a href="#">Infantil</a>
+    <a href="#">Outros</a>
+    <a href="Tela_login.php">Entrar/Cadastrar</a>
+  </nav>
+
+  <div class="search-box">
+  <input type="text" placeholder="Buscar..." />
+  <span class="search-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#5e2b2b" viewBox="0 0 24 24">
+      <path d="M10 2a8 8 0 0 1 6.32 12.906l5.387 5.387-1.414 1.414-5.387-5.387A8 8 0 1 1 10 2zm0 2a6 6 0 1 0 0 12a6 6 0 0 0 0-12z"/>
+    </svg>
+  </span>
+  </div>
+
+</header>
+
+  <section class="destaques">
+    <h2>Destaques</h2>
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><img src="img/destaque1.jpg" alt="Roupa destaque 1"></div>
+        <div class="swiper-slide"><img src="img/destaque2.jpg" alt="Roupa destaque 2"></div>
+        <div class="swiper-slide"><img src="img/destaque3.jpg" alt="Roupa destaque 3"></div>
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </section>
+
+  <section class="baseado-em-voce">
+    <h2>Baseado em você!</h2>
+    <div class="cards">
+      <div class="card">
+        <img src="img/personalizadas.jpg" alt="Peças personalizadas" />
+        <p>Peças personalizadas</p>
+      </div>
+      <div class="card">
+        <img src="img/bolsas.jpg" alt="Bolsas vintage" />
+        <p>Bolsas vintage</p>
+      </div>
+      <div class="card">
+        <img src="img/streetwear.jpg" alt="Peças streetwear" />
+        <p>Peças streetwear</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="artigos">
+    <h2>Artigos de moda</h2>
+    <div class="cards">
+      <div class="artigo">
+        <h3>A volta dos anos 2000</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+        <button onclick="mostrarManutencao()">Ler mais</button>
+      </div>
+      <div class="artigo">
+        <h3>Surgimento da moda</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+        <button onclick="mostrarManutencao()">Ler mais</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>
+      <strong>Sobre</strong><br>
+      DressCode é um projeto acadêmico que simula um e-commerce de roupas de brechó.
+    </div>
+    <div>
+      <strong>Redes sociais</strong><br>
+      @DressCodeInstagram<br>
+      @DressCodeTikTok
+    </div>
+    <div>
+      <strong>Ajuda</strong><br>
+      FAQ<br>
+      Como funciona<br>
+      Suporte<br>
+      Termos de uso
+    </div>
+    <div>
+      <strong>Contato</strong><br>
+      suportedresscode@dresscode.com<br>
+      (11) 92348-9076
+    </div>
+  </footer>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Swiper Init -->
+  <script>
+    const swiper = new Swiper(".mySwiper", {
+      loop: true,
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      autoplay: {
+        delay: 3500,
+        disableOnInteraction: false,
+      },
+    });
+  </script>
+
+  <!-- Modal Ler Mais -->
+  <script>
+    function mostrarManutencao() {
+      Swal.fire({
+        title: 'Estamos em manutenção!',
+        text: 'Agradeço ❤️',
+        icon: 'info',
+        confirmButtonText: 'Entendi',
+        confirmButtonColor: '#5e2b2b',
+        background: '#fffdfc',
+        color: '#5e2b2b'
+      });
+    }
+  </script>
+
+</body>
+</html>
