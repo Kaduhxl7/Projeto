@@ -1,0 +1,172 @@
+body {
+      font-family: 'Martel Sans', sans-serif;
+      background-color: #f5f2ef;
+      margin: 0;
+      padding: 0;
+      
+    }
+
+    header {
+      height: 70px;
+      background-color: #ffffff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #e1d8d8;
+      box-sizing: border-box;
+      padding: 0 2rem;
+    }
+
+    .logo img {
+      height: 260px;
+      margin-top: 5px;
+      width: auto;
+      display: block;
+    }
+
+    nav a {
+      margin: 0 1rem;
+      color: #5e2b2b;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .destaques {
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+
+    .destaques h2 {
+      color: #5e2b2b;
+      margin-bottom: 1rem;
+    }
+
+    .swiper {
+      width: 85%;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .swiper-slide img {
+      width: 100%;
+      height: 600px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .baseado-em-voce, .artigos {
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+
+    .baseado-em-voce h2,
+    .artigos h2 {
+      color: #5e2b2b;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 250px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .card p {
+      padding: 0.5rem;
+      background-color: #5e2b2b;
+      color: white;
+      font-weight: bold;
+    }
+
+    .artigo {
+      background-color: #b17979;
+      color: white;
+      padding: 1rem;
+      border-radius: 10px;
+      max-width: 400px;
+    }
+
+    .artigo button {
+      background: #fff;
+      color: #5e2b2b;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background 0.3s;
+    }
+
+    .artigo button:hover {
+      background: #e6e6e6;
+    }
+
+    .artigos .cards {
+      gap: 2rem;
+    }
+
+    footer {
+      background: #fff;
+      padding: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      font-size: 0.9rem;
+      color: #5e2b2b;
+      border-top: 1px solid #ccc;
+    }
+
+    @media (max-width: 768px) {
+      .cards {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    .search-box {
+      background-color: #b19a9a;
+      border-radius: 30px;
+      padding: 0.63rem 1rem 0.75rem 1.5rem; /* menos padding à direita */
+      display: flex;
+      align-items: center;
+      width: 260px; /* mais comprida */
+      margin-left: 1rem;
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      background: transparent;
+      color: #fff;
+      width: 100%;
+      font-size: 1rem;
+    }
+
+    .search-box .search-icon {
+      color: #5e2b2b;
+      font-size: 1.2rem;
+      margin-left: 0.5rem;
+      cursor: pointer;
+      margin-top: 2px; /* ou 1px, conforme necessário */
+      display: flex;
+      align-items: center;
+    }
