@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DressCode - Início</title>
+  <script src="{{ asset('js/script.js') }}"></script>
+  <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+  <!-- Google Fonts - Martel Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"/>
+</head>
+<body>
+
+ <header>
+    <div class="logo">
+      <img src="" alt="DressCode Logo" />
+    </div>
+    <nav>
+      <a href="{{ url('/Models/Feminino.php') }}">Feminino</a>
+      <a href="#">Masculino</a>
+      <a href="#">Infantil</a>
+      <a href="#">Outros</a>
+      <a href="{{ url('/Models/Cadastro.php') }}">Entrar/Cadastrar</a>
+    </nav>
+    <div class="search-box">
+      <input type="text" placeholder="Buscar..." />
+      <span class="search-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#5e2b2b" viewBox="0 0 24 24">
+          <path d="M10 2a8 8 0 0 1 6.32 12.906l5.387 5.387-1.414 1.414-5.387-5.387A8 8 0 1 1 10 2zm0 2a6 6 0 1 0 0 12a6 6 0 0 0 0-12z"/>
+        </svg>
+      </span>
+    </div>
+  </header>
+
+  <section class="destaques">
+    <h2>Destaques</h2>
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><img src="{{ asset('main/img/destaque1.jpg') }}" alt="Roupa destaque 1"></div>
+        <div class="swiper-slide"><img src="{{ asset('main/img/destaque2.jpg') }}" alt="Roupa destaque 2"></div>
+        <div class="swiper-slide"><img src="{{ asset('main/img/destaque3.jpg') }}" alt="Roupa destaque 3"></div>
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </section>
+
+  <section class="baseado-em-voce">
+    <h2>Baseado em você!</h2>
+    <div class="cards">
+      <div class="card">
+        <img src="{{ asset('img/personalizadas.jpg') }}" alt="Peças personalizadas" />
+        <p>Peças personalizadas</p>
+      </div>
+      <div class="card">
+        <img src="{{ asset('img/bolsas.jpg') }}" alt="Bolsas vintage" />
+        <p>Bolsas vintage</p>
+      </div>
+      <div class="card">
+        <img src="{{ asset('img/streetwear.jpg') }}" alt="Peças streetwear" />
+        <p>Peças streetwear</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="artigos">
+    <h2>Artigos de moda</h2>
+    <div class="cards">
+      <div class="artigo">
+        <h3>A volta dos anos 2000</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+        <button onclick="mostrarManutencao()">Ler mais</button>
+      </div>
+      <div class="artigo">
+        <h3>Surgimento da moda</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+        <button onclick="mostrarManutencao()">Ler mais</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>
+      <strong>Sobre</strong><br>
+      “DressCode” é um projeto independente com o objetivo de divulgar a moda consciente e sustentável...
+    </div>
+    <div>
+      <strong>Redes sociais</strong><br>
+      @DressCodeInstagram<br>
+      @DressCodeTikTok
+    </div>
+    <div>
+      <strong>Ajuda</strong><br>
+      FAQ<br>
+      Como funciona<br>
+      Suporte<br>
+      Termos de uso
+    </div>
+    <div>
+      <strong>Contato</strong><br>
+      suportedresscode@dresscode.com<br>
+      (11) 92348-9076
+    </div>
+  </footer>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Swiper Init -->
+  
+
+  <!-- Modal Ler Mais -->
+  
+</body>
+</html>
