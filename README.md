@@ -1,12 +1,12 @@
 # DressCode - Sistema de Brechós Online
 
 ## Grupo:
-Maria Eduarda Oliveira - Líder/22301275
-Maria Eduarda Rosa/22402080
-Kauan Alves Coelho/22302255
-Giovana Tassi/22403094
-Nicolas Peres/22302409
-Moises/22301313
+- Maria Eduarda Oliveira - Líder/22301275
+- Maria Eduarda Rosa/22402080
+- Kauan Alves Coelho/22302255
+- Giovana Tassi/22403094
+- Nicolas Peres/22302409
+- Moises/22301313
 
 ## Requisitos do sistema implementados:
 
