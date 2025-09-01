@@ -1,0 +1,19 @@
+# Arquivos de configuração local
+*.log
+*.tmp
+
+# Uploads de usuários
+public/assets/uploads/
+
+# Arquivos temporários
+*.php~
+*.bak
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Scripts temporários de setup
+create-*.php
+fix-*.php
+update-*.php
