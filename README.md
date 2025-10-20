@@ -30,6 +30,26 @@
 
 ✅ **O sistema deve garantir a segurança dos dados pessoais dos usuários e donos de brechós** - Feito
 
+**O sistema deve permitir que os donos dos brechós atualizem seus anúncios** - Pendente 
+
+**Deve haver um sistema de pagamento online para a taxa de anúncio.** - Pendente 
+
+**O sistema deve enviar notificações sobre novos produtos ou promoções.** - Pendente 
+
+**O sistema deve oferecer suporte a múltiplos idiomas.** - Pendente 
+
+**Deve haver um dashboard para os donos dos brechós visualizarem suas vendas e lucros.** - Pendente 
+
+**O sistema deve permitir a exportação de relatórios de vendas em PDF.** - Pendente 
+
+**Deve haver um sistema de busca eficiente para encontrar brechós por localização** - Pendente 
+
+**O site deve ter uma seção de perguntas frequentes (FAQ).** - Pendente 
+
+**Os usuários devem poder compartilhar produtos nas redes sociais.** - Pendente 
+
+**Deve haver um mecanismo para reportar problemas com produtos ou anúncios.** - Pendente 
+
 ## Novas Funcionalidades Implementadas:
 
 🆕 **Sistema de Cadastro Completo**
