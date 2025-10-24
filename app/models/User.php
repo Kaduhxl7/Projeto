@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/DatabaseConnection.php';
 
 class User {
     private $conn;
@@ -32,8 +32,9 @@ class User {
     public $cidade;
     public $estado;
 
-    public function __construct($db) {
-        $this->conn = $db;
+    public function __construct($db = null) {
+        // Usar Singleton se não for fornecida conexão específica
+        $this->conn = $db ?? DatabaseConnection::getInstance();
     }
 
     public function create() {

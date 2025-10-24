@@ -1,16 +1,23 @@
 <?php
 require_once __DIR__ . '/../config/bootstrap.php';
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/DatabaseConnection.php';
 require_once __DIR__ . '/../models/NotificationSimple.php';
+require_once __DIR__ . '/../observers/ProductPublisher.php';
+require_once __DIR__ . '/../observers/NotificationObserver.php';
 
 class NotificationController {
     private $notificationModel;
     private $db;
+    private $publisher;
     
     public function __construct() {
-        $database = new Database();
-        $this->db = $database->getConnection();
+        // Usar padrão Singleton para conexão
+        $this->db = DatabaseConnection::getInstance();
         $this->notificationModel = new NotificationSimple($this->db);
+        
+        // Configurar padrão Observer
+        $this->publisher = ProductPublisher::getInstance();
+        $this->publisher->attach(new NotificationObserver());
     }
     
     /**
@@ -184,24 +191,30 @@ class NotificationController {
     }
     
     /**
-     * Criar notificação de novo produto (chamado automaticamente)
+     * Criar notificação de novo produto (usando padrão Observer)
      */
     public function notifyNewProduct($produto_id, $produto_nome, $brecho_id = null) {
-        return $this->notificationModel->notifyNewProduct($produto_id, $produto_nome, $brecho_id);
+        // Usar Observer para desacoplar a criação de notificações
+        $this->publisher->notifyNewProduct($produto_id, $produto_nome, $brecho_id);
+        return true;
     }
     
     /**
-     * Criar notificação de promoção (chamado automaticamente)
+     * Criar notificação de promoção (usando padrão Observer)
      */
     public function notifyPromotion($titulo, $descricao, $brecho_id = null, $brecho_nome = null) {
-        return $this->notificationModel->notifyPromotion($titulo, $descricao, $brecho_id, $brecho_nome);
+        // Usar Observer para desacoplar a criação de notificações
+        $this->publisher->notifyPromotion($titulo, $descricao, $brecho_id, $brecho_nome);
+        return true;
     }
     
     /**
-     * Criar notificação de atualização do brechó
+     * Criar notificação de atualização do brechó (usando padrão Observer)
      */
     public function notifyStoreUpdate($brecho_id, $brecho_nome) {
-        return $this->notificationModel->notifyStoreUpdate($brecho_id, $brecho_nome);
+        // Usar Observer para desacoplar a criação de notificações
+        $this->publisher->notifyStoreUpdate($brecho_id, $brecho_nome);
+        return true;
     }
     
     /**

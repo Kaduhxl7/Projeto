@@ -1,12 +1,16 @@
 <?php
 require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/../models/Brecho.php';
+require_once __DIR__ . '/../strategies/SearchContext.php';
 
 class BuscaController {
     private $brechoModel;
+    private $searchContext;
 
     public function __construct() {
         $this->brechoModel = new Brecho();
+        // Usar padrão Strategy para busca
+        $this->searchContext = new SearchContext();
     }
 
     // Página principal de busca
@@ -22,7 +26,7 @@ class BuscaController {
         include __DIR__ . '/../views/busca.php';
     }
 
-    // Processar busca
+    // Processar busca (usando padrão Strategy)
     public function search() {
         $filters = $this->processFilters();
         
@@ -32,9 +36,9 @@ class BuscaController {
         $filters['page'] = $page;
         $filters['limit'] = $limit;
 
-        // Buscar brechós
-        $brechos = $this->brechoModel->searchWithFilters($filters);
-        $total_results = $this->brechoModel->countWithFilters($filters);
+        // Buscar brechós usando Strategy (determinação automática da melhor estratégia)
+        $brechos = $this->searchContext->smartSearch($filters);
+        $total_results = $this->searchContext->smartCount($filters);
         $total_pages = ceil($total_results / $limit);
 
         $data = [

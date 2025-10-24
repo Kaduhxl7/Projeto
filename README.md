@@ -16,26 +16,107 @@
 DressCode/
 ├── app/                    # Arquitetura MVC Principal
 │   ├── config/             # Configurações do sistema
+│   │   ├── bootstrap.php
+│   │   ├── config.php
+│   │   ├── database.php
+│   │   ├── DatabaseConnection.php  # Padrão Singleton
+│   │   ├── Language.php
+│   │   ├── payment.php
+│   │   └── transitions.php
 │   ├── controllers/        # Controladores MVC
+│   │   ├── AuthController.php
+│   │   ├── BuscaController.php
+│   │   ├── DashboardController.php
+│   │   ├── NotificationController.php
+│   │   ├── ProductController.php
+│   │   └── [outros controladores]
 │   ├── models/             # Modelos de dados
+│   │   ├── User.php
+│   │   ├── Product.php
+│   │   ├── Brecho.php
+│   │   ├── Notification.php
+│   │   └── [outros models]
 │   ├── views/              # Views/Templates
+│   │   ├── layouts/
+│   │   ├── partials/
+│   │   ├── products/
+│   │   ├── payment/
+│   │   └── errors/
 │   ├── entities/           # Entidades do domínio
+│   │   ├── Product.php
+│   │   └── Category.php
+│   ├── factories/          # Padrão Factory Method
+│   │   └── ProductFactory.php
+│   ├── observers/          # Padrão Observer
+│   │   ├── Observer.php
+│   │   ├── Subject.php
+│   │   ├── ProductPublisher.php
+│   │   └── NotificationObserver.php
+│   ├── strategies/         # Padrão Strategy
+│   │   ├── SearchStrategy.php
+│   │   ├── SearchByLocationStrategy.php
+│   │   ├── SearchByCategoryStrategy.php
+│   │   ├── SearchByPriceStrategy.php
+│   │   └── SearchContext.php
 │   ├── helpers/            # Classes auxiliares
+│   │   ├── NotificationIntegration.php
+│   │   ├── ProductTranslator.php
+│   │   └── TranslationHelper.php
 │   ├── languages/          # Arquivos de idioma
+│   │   ├── pt.php
+│   │   ├── en.php
+│   │   ├── es.php
+│   │   └── fr.php
 │   └── repositories/       # Repositórios de dados
+│       ├── ProductRepository.php
+│       └── CategoryRepository.php
 ├── public/                 # Arquivos públicos (entry point)
 │   ├── assets/             # CSS, JS, imagens
-│   └── *.php               # Páginas públicas
+│   │   ├── css/
+│   │   ├── js/
+│   │   ├── images/
+│   │   └── uploads/
+│   ├── index.php           # Página inicial
+│   ├── login.php
+│   ├── cadastro.php
+│   ├── dashboard.php
+│   ├── notifications.php
+│   ├── busca.php
+│   ├── produto.php
+│   ├── checkout.php
+│   └── [outras páginas públicas]
 ├── database/               # Scripts SQL
-├── scripts/                # Scripts de inicialização (.bat, .sh)
-├── docs/                   # Documentação (.md, .pdf)
+│   ├── database.sql
+│   ├── setup-database.sql
+│   ├── create-notifications-tables.sql
+│   ├── create-payment-tables.sql
+│   └── [outros scripts SQL]
+├── docs/                   # Documentação
+│   ├── padroes_projeto.md  # Documentação dos Padrões GoF
+│   ├── INSTALACAO.md
+│   ├── SISTEMA-NOTIFICACOES-IMPLEMENTADO.md
+│   ├── SISTEMA-PAGAMENTO-IMPLEMENTADO.md
+│   └── [outras documentações]
+├── examples/               # Exemplos de uso
+│   ├── padroes_exemplo.php # Demonstração dos Padrões GoF
+│   └── product-integration-example.php
+├── scripts/                # Scripts de inicialização
+│   ├── setup.bat           # Windows
+│   ├── setup.sh            # Linux/macOS
+│   ├── start-server.bat
+│   └── INSTALAR.bat
 ├── tests/                  # Arquivos de teste
+│   ├── test-notifications.php
+│   ├── test-busca.php
+│   └── [outros testes]
 ├── temp/                   # Arquivos temporários
 ├── backups/                # Backups e arquivos compactados
 ├── resources/              # Recursos auxiliares
 ├── utils/                  # Utilitários diversos
 ├── includes/               # Arquivos de inclusão
-└── examples/               # Exemplos de uso
+├── .env.example            # Exemplo de configuração
+├── .gitignore
+└── README.md
 ```
 
 ## Requisitos do sistema implementados:
@@ -149,3 +230,7 @@ php -S localhost:8000
 - ✅ Linux (Ubuntu, Debian, etc.)
 - ✅ macOS (MAMP, Homebrew)
 - ✅ Funciona imediatamente após clonar/copiar o projeto
+
+---
+
+🛠️ **Estrutura do projeto atualizada automaticamente para refletir a versão mais recente do código local.**

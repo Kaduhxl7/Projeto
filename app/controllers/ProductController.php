@@ -2,17 +2,23 @@
 require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/../repositories/ProductRepository.php';
 require_once __DIR__ . '/../repositories/CategoryRepository.php';
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/DatabaseConnection.php';
+require_once __DIR__ . '/../factories/ProductFactory.php';
+require_once __DIR__ . '/../strategies/SearchContext.php';
 
 class ProductController {
     private $productRepository;
     private $categoryRepository;
+    private $searchContext;
 
     public function __construct() {
-        $database = new Database();
-        $db = $database->getConnection();
+        // Usar padrão Singleton para conexão
+        $db = DatabaseConnection::getInstance();
         $this->productRepository = new ProductRepository($db);
         $this->categoryRepository = new CategoryRepository($db);
+        
+        // Usar padrão Strategy para busca
+        $this->searchContext = new SearchContext();
     }
 
     // Listar produtos por categoria
@@ -84,7 +90,7 @@ class ProductController {
         include __DIR__ . '/../views/products/detail.php';
     }
 
-    // Busca geral
+    // Busca geral (usando padrão Strategy)
     public function search() {
         $filters = $this->processFilters();
         
@@ -94,9 +100,9 @@ class ProductController {
         $filters['page'] = $page;
         $filters['limit'] = $limit;
 
-        // Buscar produtos
-        $produtos = $this->productRepository->search($filters);
-        $total_produtos = $this->productRepository->count($filters);
+        // Buscar produtos usando Strategy (determinação automática da melhor estratégia)
+        $produtos = $this->searchContext->smartSearch($filters);
+        $total_produtos = $this->searchContext->smartCount($filters);
         $total_pages = ceil($total_produtos / $limit);
 
         // Filtros disponíveis

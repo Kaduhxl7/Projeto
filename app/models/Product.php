@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/DatabaseConnection.php';
 
 class Product {
     private $conn;
@@ -18,8 +18,9 @@ class Product {
     public $status;
     public $visualizacoes;
 
-    public function __construct($db) {
-        $this->conn = $db;
+    public function __construct($db = null) {
+        // Usar Singleton se não for fornecida conexão específica
+        $this->conn = $db ?? DatabaseConnection::getInstance();
     }
 
     // Buscar todos os produtos com filtros

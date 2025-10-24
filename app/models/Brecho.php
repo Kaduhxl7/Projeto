@@ -1,13 +1,13 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/DatabaseConnection.php';
 
 class Brecho {
     private $conn;
     private $table_name = "brechos";
 
     public function __construct() {
-        $database = new Database();
-        $this->conn = $database->getConnection();
+        // Usar padrão Singleton para conexão com banco
+        $this->conn = DatabaseConnection::getInstance();
     }
 
     // Buscar brechós por cidade/bairro
