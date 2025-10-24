@@ -1,5 +1,7 @@
 # DressCode - Sistema de Brechós Online
 
+**Autor Principal:** Kauan Alves Coelho
+
 ## Grupo:
 - Maria Eduarda Oliveira - Líder/22301275
 - Maria Eduarda Rosa/22402080
@@ -7,6 +9,34 @@
 - Giovana Tassi/22403094
 - Nicolas Peres/22302409
 - Moises/22301313
+
+## 📁 Estrutura do Projeto
+
+```
+DressCode/
+├── app/                    # Arquitetura MVC Principal
+│   ├── config/             # Configurações do sistema
+│   ├── controllers/        # Controladores MVC
+│   ├── models/             # Modelos de dados
+│   ├── views/              # Views/Templates
+│   ├── entities/           # Entidades do domínio
+│   ├── helpers/            # Classes auxiliares
+│   ├── languages/          # Arquivos de idioma
+│   └── repositories/       # Repositórios de dados
+├── public/                 # Arquivos públicos (entry point)
+│   ├── assets/             # CSS, JS, imagens
+│   └── *.php               # Páginas públicas
+├── database/               # Scripts SQL
+├── scripts/                # Scripts de inicialização (.bat, .sh)
+├── docs/                   # Documentação (.md, .pdf)
+├── tests/                  # Arquivos de teste
+├── temp/                   # Arquivos temporários
+├── backups/                # Backups e arquivos compactados
+├── resources/              # Recursos auxiliares
+├── utils/                  # Utilitários diversos
+├── includes/               # Arquivos de inclusão
+└── examples/               # Exemplos de uso
+```
 
 ## Requisitos do sistema implementados:
 

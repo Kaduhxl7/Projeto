@@ -9,19 +9,16 @@ public/assets/uploads/
 # Arquivos temporários
 *.php~
 *.bak
+*.old
+*.cache
 
 # Arquivos do sistema
 .DS_Store
 Thumbs.db
 
-# Scripts temporários de setup
-create-*.php
-fix-*.php
-update-*.php
-setup-*.php
-test-*.php
-testar-*.php
-verificar-*.php
+# Pastas organizacionais
+/backups/
+/temp/
 
 # Dependências
 vendor/
@@ -34,3 +31,18 @@ storage/
 
 # Logs
 logs/
+
+# Arquivos compactados
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Scripts temporários de setup
+create-*.php
+fix-*.php
+update-*.php
+setup-*.php
+test-*.php
+testar-*.php
+verificar-*.php
