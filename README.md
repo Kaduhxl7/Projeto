@@ -46,7 +46,7 @@
 
 ✅ **O site deve ter uma seção de perguntas frequentes (FAQ).** - Implementado
 
-**Os usuários devem poder compartilhar produtos nas redes sociais.** - Pendente
+✅**Os usuários devem poder compartilhar produtos nas redes sociais.** - Pendente
 
 ✅ **Deve haver um mecanismo para reportar problemas com produtos ou anúncios.** - Implementado 
 
