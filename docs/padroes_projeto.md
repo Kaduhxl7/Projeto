@@ -9,7 +9,7 @@ Este documento descreve os padrões de projeto (Design Patterns) implementados n
 | **Singleton** | Criacional | `app/config/DatabaseConnection.php` | Garante uma única instância de conexão com banco |
 | **Factory Method** | Criacional | `app/factories/ProductFactory.php` | Cria diferentes tipos de produtos baseados na condição |
 | **Observer** | Comportamental | `app/observers/` | Desacopla sistema de notificações dos controladores |
-| **Strategy** | Comportamental | `app/strategies/` | Permite diferentes algoritmos de busca intercambiáveis |
+| **Strategy + Decorator** | Comportamental | `app/search/` | Sistema flexível de busca com filtros dinâmicos |
 
 ---
 
@@ -142,65 +142,84 @@ class NotificationObserver implements Observer {
 
 ---
 
-## 🎯 4. Strategy Pattern
+## 🎯 4. Strategy + Decorator Pattern
 
 ### **Onde foi aplicado:**
-- `app/strategies/SearchStrategy.php` (interface)
-- `app/strategies/SearchByLocationStrategy.php` (estratégia concreta)
-- `app/strategies/SearchByCategoryStrategy.php` (estratégia concreta)
-- `app/strategies/SearchByPriceStrategy.php` (estratégia concreta)
-- `app/strategies/SearchContext.php` (contexto)
-- `app/controllers/BuscaController.php` (integração)
+- `app/search/SearchStrategy.php` (interface strategy)
+- `app/search/BuscarProdutosStrategy.php` (estratégia concreta)
+- `app/search/ProdutoSearchInterface.php` (interface decorator)
+- `app/search/ProdutoSearchBase.php` (busca base)
+- `app/search/decorators/` (decorators de filtros)
+- `app/repositories/ProductRepository.php` (execução)
 - `app/controllers/ProductController.php` (integração)
 
 ### **Justificativa técnica:**
-O Strategy foi implementado para diferentes algoritmos de busca porque:
-- **Intercambiabilidade**: Permite trocar algoritmos de busca dinamicamente
-- **Otimização**: Cada estratégia é otimizada para seu caso específico
-- **Manutenibilidade**: Facilita modificação e adição de novos algoritmos
-- **Separação de responsabilidades**: Cada estratégia foca em um tipo de busca
+A combinação Strategy + Decorator foi implementada para criar um sistema de busca flexível:
+- **Strategy define "o que buscar"**: Diferentes contextos de busca (produtos, lojas, etc.)
+- **Decorator define "como filtrar"**: Critérios específicos aplicados dinamicamente
+- **Eficiência**: Filtros aplicados a nível de SQL, não em memória
+- **Flexibilidade**: Combinação dinâmica de filtros
+- **Manutenibilidade**: Fácil adição de novos filtros
 
-### **Estratégias implementadas:**
+### **Arquitetura implementada:**
 
-#### 🌍 **SearchByLocationStrategy**
-- **Uso**: Busca por proximidade geográfica
-- **Algoritmo**: Fórmula Haversine para cálculo de distâncias
-- **Otimização**: Ordenação por distância, filtro por raio
+#### 🎯 **Strategy (BuscarProdutosStrategy)**
+- **Responsabilidade**: Define o contexto de busca de produtos
+- **Funcionalidade**: Aplica decorators baseado nos filtros recebidos
+- **Integração**: Usa ProductRepository para executar a busca final
 
-#### 📂 **SearchByCategoryStrategy**
-- **Uso**: Busca focada em categorias de produtos
-- **Algoritmo**: Filtros avançados por atributos (cor, tamanho, marca, condição)
-- **Otimização**: Ordenação por relevância, prioriza produtos promocionais
-
-#### 💰 **SearchByPriceStrategy**
-- **Uso**: Busca otimizada para faixas de preço
-- **Algoritmo**: Faixas predefinidas, cálculo de descontos
-- **Otimização**: Prioriza ofertas e melhor custo-benefício
+#### 🎨 **Decorators disponíveis:**
+- **FiltroCategoriaDecorator**: Filtra por categoria de produto
+- **FiltroPrecoMinDecorator**: Filtra por preço mínimo
+- **FiltroPrecoMaxDecorator**: Filtra por preço máximo
+- **FiltroMarcaDecorator**: Filtra por marca
+- **FiltroCorDecorator**: Filtra por cor
+- **FiltroTamanhoDecorator**: Filtra por tamanho
+- **FiltroCondicaoDecorator**: Filtra por condição do produto
+- **FiltroTextoDecorator**: Busca textual em nome, descrição e marca
 
 ### **Implementação:**
 ```php
-// Context que gerencia as estratégias
-class SearchContext {
-    private ?SearchStrategy $strategy = null;
-    
-    public function determineStrategy(array $filters): SearchStrategy {
-        if (!empty($filters['latitude'])) return new SearchByLocationStrategy();
-        if (!empty($filters['preco_min'])) return new SearchByPriceStrategy();
-        return new SearchByCategoryStrategy(); // Padrão
+// Strategy que usa Decorators
+class BuscarProdutosStrategy implements SearchStrategy {
+    public function search(): array {
+        // 1. Busca base
+        $search = new ProdutoSearchBase();
+        
+        // 2. Aplica decorators dinamicamente
+        if (isset($this->filters['categoria'])) {
+            $search = new FiltroCategoriaDecorator($search, $this->filters['categoria']);
+        }
+        if (isset($this->filters['preco_max'])) {
+            $search = new FiltroPrecoMaxDecorator($search, $this->filters['preco_max']);
+        }
+        
+        // 3. Executa no repository
+        return $this->repo->executarBusca($search);
+    }
+}
+
+// Decorator que modifica SQL
+class FiltroCategoriaDecorator implements ProdutoSearchInterface {
+    public function getSQL(): string {
+        return $this->busca->getSQL() . " AND c.slug = :categoria";
     }
     
-    public function smartSearch(array $filters): array {
-        $this->strategy = $this->determineStrategy($filters);
-        return $this->strategy->search($db, $filters);
+    public function getParams(): array {
+        $params = $this->busca->getParams();
+        $params[':categoria'] = $this->categoria;
+        return $params;
     }
 }
 ```
 
 ### **Benefícios obtidos:**
-- ✅ Algoritmos de busca especializados
-- ✅ Melhor performance para cada tipo de busca
-- ✅ Fácil adição de novas estratégias
-- ✅ Seleção automática da melhor estratégia
+- ✅ Sistema de busca altamente flexível
+- ✅ Filtros aplicados eficientemente no SQL
+- ✅ Fácil adição de novos filtros
+- ✅ Combinação dinâmica de critérios
+- ✅ Código limpo e modular
+- ✅ Melhor performance que filtros em memória
 
 ---
 
@@ -208,17 +227,26 @@ class SearchContext {
 
 ### **Como os padrões trabalham juntos:**
 
-1. **Singleton + Factory**: A conexão única do banco é usada pelo Factory para criar produtos
+1. **Singleton + Repository**: A conexão única do banco é injetada nos repositórios
 2. **Factory + Observer**: Produtos criados pelo Factory podem disparar eventos para observadores
-3. **Observer + Strategy**: Notificações podem usar diferentes estratégias de entrega
-4. **Strategy + Singleton**: Estratégias de busca usam a conexão única do banco
+3. **Strategy + Decorator**: Estratégias usam decorators para compor filtros dinamicamente
+4. **Repository + Strategy**: Repositórios executam buscas compostas pelas estratégias
+5. **Decorator + SQL**: Decorators modificam queries SQL para eficiência
 
-### **Fluxo de exemplo:**
+### **Fluxo de busca:**
 ```
-1. ProductFactory cria produto → 
-2. ProductPublisher notifica observadores → 
-3. NotificationObserver cria notificações → 
-4. SearchContext usa estratégia otimizada para buscar produtos
+1. ProductController recebe filtros → 
+2. BuscarProdutosStrategy aplica decorators → 
+3. Decorators compõem SQL dinamicamente → 
+4. ProductRepository executa busca otimizada
+```
+
+### **Fluxo de favoritos:**
+```
+1. ProductController recebe requisição → 
+2. Extrai idProduto e idUsuario → 
+3. ProductRepository executa operação SQL → 
+4. Retorna resposta JSON
 ```
 
 ---
@@ -234,8 +262,11 @@ class SearchContext {
 ### **Depois da implementação:**
 - ✅ Conexão única e eficiente
 - ✅ Sistema de notificações desacoplado
-- ✅ Múltiplas estratégias de busca otimizadas
+- ✅ Sistema de busca flexível com Strategy + Decorator
 - ✅ Criação automática e tipada de produtos
+- ✅ Favoritos integrados ao ProductController
+- ✅ Repositórios com injeção de dependência
+- ✅ Separação clara de responsabilidades
 
 ---
 
@@ -265,11 +296,22 @@ class SearchContext {
 
 ## 📝 Conclusão
 
-A implementação dos padrões GoF no sistema de brechós resultou em:
+A refatoração com padrões GoF no sistema de brechós resultou em:
 
-- **Código mais limpo e organizad**: Seguindo princípios SOLID
-- **Melhor performance**: Otimizações específicas para cada caso de uso
-- **Maior flexibilidade**: Facilita mudanças e extensões futuras
-- **Manutenibilidade aprimorada**: Código mais fácil de entender e modificar
+- **Arquitetura mais robusta**: Strategy + Decorator para busca flexível
+- **Separação de responsabilidades**: SQL apenas nos repositórios
+- **Injeção de dependência**: PDO injetado via construtor
+- **Código mais limpo**: Remoção da FavoritosController desnecessária
+- **Melhor performance**: Filtros aplicados a nível de SQL
+- **Maior flexibilidade**: Fácil adição de novos filtros e estratégias
+- **Manutenibilidade aprimorada**: Código modular e testável
 
-Todos os padrões foram aplicados de forma justificada e adequada ao domínio do sistema, melhorando significativamente a qualidade do código sem quebrar funcionalidades existentes.
+### **Principais melhorias:**
+
+1. **FavoritosController removida** - Funcionalidade movida para ProductController
+2. **Nova arquitetura de busca** - Strategy + Decorator para máxima flexibilidade
+3. **Repositórios centralizados** - Todo SQL concentrado nos repositórios
+4. **Injeção de dependência** - PDO injetado via construtor
+5. **Filtros dinâmicos** - Decorators aplicados conforme necessidade
+
+Todas as refatorações mantiveram a funcionalidade existente para o usuário final, melhorando significativamente a qualidade e organização do código.

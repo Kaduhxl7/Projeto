@@ -258,5 +258,45 @@ class ProductRepository {
         
         return $filters;
     }
+
+    // Métodos de favoritos movidos da FavoritosController
+    public function favoritarProduto(int $idProduto, int $idUsuario): bool {
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO favoritos (usuario_id, produto_id) VALUES (?, ?)");
+            return $stmt->execute([$idUsuario, $idProduto]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function desfavoritarProduto(int $idProduto, int $idUsuario): bool {
+        $stmt = $this->pdo->prepare("DELETE FROM favoritos WHERE usuario_id = ? AND produto_id = ?");
+        return $stmt->execute([$idUsuario, $idProduto]);
+    }
+
+    public function isFavorito(int $idProduto, int $idUsuario): bool {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM favoritos WHERE usuario_id = ? AND produto_id = ?");
+        $stmt->execute([$idUsuario, $idProduto]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function listarFavoritos(int $idUsuario): array {
+        $stmt = $this->pdo->prepare("SELECT p.*, c.nome as categoria_nome 
+                                    FROM favoritos f 
+                                    JOIN produtos p ON f.produto_id = p.id 
+                                    JOIN categorias c ON p.categoria_id = c.id 
+                                    WHERE f.usuario_id = ? 
+                                    ORDER BY f.created_at DESC");
+        $stmt->execute([$idUsuario]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Método para executar busca usando Decorator pattern
+    public function executarBusca($search): array {
+        $sql = $search->getSQL();
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($search->getParams());
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>

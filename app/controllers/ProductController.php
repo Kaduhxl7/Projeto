@@ -4,21 +4,17 @@ require_once __DIR__ . '/../repositories/ProductRepository.php';
 require_once __DIR__ . '/../repositories/CategoryRepository.php';
 require_once __DIR__ . '/../config/DatabaseConnection.php';
 require_once __DIR__ . '/../factories/ProductFactory.php';
-require_once __DIR__ . '/../strategies/SearchContext.php';
+require_once __DIR__ . '/../search/BuscarProdutosStrategy.php';
 
 class ProductController {
     private $productRepository;
     private $categoryRepository;
-    private $searchContext;
 
     public function __construct() {
         // Usar padrão Singleton para conexão
         $db = DatabaseConnection::getInstance();
         $this->productRepository = new ProductRepository($db);
         $this->categoryRepository = new CategoryRepository($db);
-        
-        // Usar padrão Strategy para busca
-        $this->searchContext = new SearchContext();
     }
 
     // Listar produtos por categoria
@@ -41,8 +37,9 @@ class ProductController {
         $filters['page'] = $page;
         $filters['limit'] = $limit;
 
-        // Buscar produtos
-        $produtos = $this->productRepository->search($filters);
+        // Buscar produtos usando nova arquitetura Strategy + Decorator
+        $searchStrategy = new BuscarProdutosStrategy($this->productRepository, $filters);
+        $produtos = $searchStrategy->search();
         $total_produtos = $this->productRepository->count($filters);
         $total_pages = ceil($total_produtos / $limit);
 
@@ -100,9 +97,10 @@ class ProductController {
         $filters['page'] = $page;
         $filters['limit'] = $limit;
 
-        // Buscar produtos usando Strategy (determinação automática da melhor estratégia)
-        $produtos = $this->searchContext->smartSearch($filters);
-        $total_produtos = $this->searchContext->smartCount($filters);
+        // Buscar produtos usando nova arquitetura Strategy + Decorator
+        $searchStrategy = new BuscarProdutosStrategy($this->productRepository, $filters);
+        $produtos = $searchStrategy->search();
+        $total_produtos = $this->productRepository->count($filters);
         $total_pages = ceil($total_produtos / $limit);
 
         // Filtros disponíveis
@@ -172,13 +170,74 @@ class ProductController {
         header('Content-Type: application/json');
         
         $filters = $this->processFilters();
-        $produtos = $this->productRepository->search($filters);
+        $searchStrategy = new BuscarProdutosStrategy($this->productRepository, $filters);
+        $produtos = $searchStrategy->search();
         
         echo json_encode([
             'success' => true,
             'produtos' => $produtos,
             'total' => count($produtos)
         ]);
+    }
+
+    // Métodos de favoritos movidos da FavoritosController
+    public function favoritarAction() {
+        session_start();
+        header('Content-Type: application/json');
+        
+        if (!isset($_SESSION['user_id'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Usuário não logado']);
+            return;
+        }
+        
+        $input = json_decode(file_get_contents('php://input'), true);
+        $produto_id = $input['produto_id'] ?? null;
+        $action = $input['action'] ?? 'toggle';
+        
+        if (!$produto_id) {
+            echo json_encode(['status' => 'error', 'message' => 'ID do produto não informado']);
+            return;
+        }
+        
+        $usuario_id = $_SESSION['user_id'];
+        
+        try {
+            if ($action === 'remove') {
+                $success = $this->productRepository->desfavoritarProduto($produto_id, $usuario_id);
+                $message = $success ? 'Produto removido dos favoritos!' : 'Erro ao remover favorito';
+            } else {
+                // Toggle: se já é favorito, remove; se não é, adiciona
+                if ($this->productRepository->isFavorito($produto_id, $usuario_id)) {
+                    $success = $this->productRepository->desfavoritarProduto($produto_id, $usuario_id);
+                    $message = $success ? 'Produto removido dos favoritos!' : 'Erro ao remover favorito';
+                } else {
+                    $success = $this->productRepository->favoritarProduto($produto_id, $usuario_id);
+                    $message = $success ? 'Produto adicionado aos favoritos!' : 'Produto já está nos favoritos!';
+                }
+            }
+            
+            echo json_encode([
+                'status' => $success ? 'success' : 'error',
+                'message' => $message
+            ]);
+            
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Erro interno']);
+        }
+    }
+
+    public function listarFavoritos() {
+        session_start();
+        
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login.php');
+            return;
+        }
+        
+        $favoritos = $this->productRepository->listarFavoritos($_SESSION['user_id']);
+        
+        $data = ['favoritos' => $favoritos];
+        include __DIR__ . '/../views/products/favoritos.php';
     }
 }
 ?>
