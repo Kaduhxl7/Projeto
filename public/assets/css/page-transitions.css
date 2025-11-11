@@ -1,0 +1,125 @@
+/* Sistema de Transições de Página - DressCode */
+
+.brand-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #5e2b2b 0%, #8b4444 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.brand-transition-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.brand-content {
+    text-align: center;
+    transform: scale(0.8);
+    opacity: 0;
+    animation: brandFadeIn 0.8s ease forwards;
+}
+
+.brand-logo {
+    width: 80px;
+    height: auto;
+    margin-bottom: 20px;
+    filter: brightness(0) invert(1);
+}
+
+.brand-name {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    font-family: 'Martel Sans', sans-serif;
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+@keyframes brandFadeIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Animação de saída */
+.brand-transition-overlay.fade-out .brand-content {
+    animation: brandFadeOut 0.4s ease forwards;
+}
+
+@keyframes brandFadeOut {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+}
+
+/* Transição do conteúdo da página */
+.page-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.4s ease;
+}
+
+.page-content.transitioning {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .brand-name {
+        font-size: 2rem;
+    }
+    
+    .brand-logo {
+        width: 60px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-name {
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+    }
+    
+    .brand-logo {
+        width: 50px;
+        margin-bottom: 10px;
+    }
+}
+
+/* Tema escuro */
+.tema-escuro .brand-transition-overlay {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+.tema-escuro .brand-name {
+    color: #ffffff;
+}
+
+.tema-escuro .brand-logo {
+    filter: brightness(0) invert(1);
+}
