@@ -1,0 +1,703 @@
+<!-- PÁGINA 13: FUNCIONALIDADES CONTINUAÇÃO -->
+<div class="page">
+    <h1>6. Funcionalidades do Sistema (cont.)</h1>
+    
+    <h3>⚙️ Configurações Personalizadas</h3>
+    <ul>
+        <li>Tema claro/escuro</li>
+        <li>Personalização de cores</li>
+        <li>Ajuste de tamanho de fonte</li>
+        <li>Preferências de layout</li>
+        <li>Configurações de privacidade</li>
+    </ul>
+    
+    <h3>🌍 Internacionalização</h3>
+    <ul>
+        <li>Suporte a 4 idiomas: Português, Inglês, Espanhol, Francês</li>
+        <li>Tradução automática de produtos</li>
+        <li>Persistência de preferência de idioma</li>
+        <li>Sistema de fallback para traduções</li>
+    </ul>
+    
+    <h3>🔒 Segurança e LGPD</h3>
+    <ul>
+        <li>Criptografia de senhas (bcrypt)</li>
+        <li>Proteção contra SQL Injection (PDO prepared statements)</li>
+        <li>Sanitização de inputs</li>
+        <li>Log de tentativas de login</li>
+        <li>Exportação de dados pessoais</li>
+        <li>Exclusão de conta</li>
+        <li>Controle de consentimentos</li>
+    </ul>
+    
+    <h3>⭐ Avaliações e Comentários</h3>
+    <ul>
+        <li>Sistema de avaliação de produtos (1-5 estrelas)</li>
+        <li>Comentários de compradores</li>
+        <li>Moderação de conteúdo</li>
+        <li>Média de avaliações</li>
+    </ul>
+    
+    <h3>❓ FAQ e Suporte</h3>
+    <ul>
+        <li>Seção de perguntas frequentes</li>
+        <li>Sistema de reportar problemas</li>
+        <li>Categorização de dúvidas</li>
+        <li>Busca no FAQ</li>
+    </ul>
+    
+    <h3>📄 Termos e Privacidade</h3>
+    <ul>
+        <li>Sistema de aceite de termos</li>
+        <li>Política de privacidade</li>
+        <li>Controle de versões de termos</li>
+        <li>Histórico de aceites</li>
+    </ul>
+</div>
+
+<!-- PÁGINA 14: ESTRUTURA DE DIRETÓRIOS -->
+<div class="page">
+    <h1>7. Estrutura de Diretórios</h1>
+    
+    <div class="code-block" style="font-size: 12px;">
+DressCode/
+├── app/                          # Arquitetura MVC
+│   ├── config/                   # Configurações
+│   │   ├── DatabaseConnection.php    # Singleton
+│   │   ├── database.php
+│   │   ├── bootstrap.php
+│   │   └── Language.php
+│   │
+│   ├── controllers/              # Controladores MVC
+│   │   ├── ProductController.php
+│   │   ├── AuthController.php
+│   │   ├── DashboardController.php
+│   │   ├── NotificationController.php
+│   │   └── PaymentController.php
+│   │
+│   ├── models/                   # Modelos de dados
+│   │   ├── Product.php
+│   │   ├── User.php
+│   │   ├── Brecho.php
+│   │   └── Notification.php
+│   │
+│   ├── views/                    # Views/Templates
+│   │   ├── products/
+│   │   ├── layouts/
+│   │   ├── partials/
+│   │   └── errors/
+│   │
+│   ├── repositories/             # Repository Pattern
+│   │   ├── ProductRepository.php
+│   │   ├── CategoryRepository.php
+│   │   └── TermoRepository.php
+│   │
+│   ├── factories/                # Factory Method
+│   │   └── ProductFactory.php
+│   │
+│   ├── observers/                # Observer Pattern
+│   │   ├── Observer.php
+│   │   ├── Subject.php
+│   │   ├── ProductPublisher.php
+│   │   └── NotificationObserver.php
+│   │
+│   ├── search/                   # Strategy + Decorator
+│   │   ├── SearchStrategy.php
+│   │   ├── BuscarProdutosStrategy.php
+│   │   ├── ProdutoSearchBase.php
+│   │   └── decorators/
+│   │       ├── FiltroCategoriaDecorator.php
+│   │       ├── FiltroPrecoMaxDecorator.php
+│   │       ├── FiltroCorDecorator.php
+│   │       └── [outros decorators]
+│   │
+│   ├── strategies/               # Outras Strategies
+│   │   ├── SearchByLocationStrategy.php
+│   │   └── SearchByCategoryStrategy.php
+│   │
+│   ├── entities/                 # Entidades do domínio
+│   │   ├── Product.php
+│   │   └── Category.php
+│   │
+│   ├── helpers/                  # Classes auxiliares
+│   │   └── TranslationHelper.php
+│   │
+│   └── languages/                # Arquivos de idioma
+│       ├── pt.php
+│       ├── en.php
+│       └── es.php
+│
+├── public/                       # Ponto de entrada
+│   ├── assets/
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── images/
+│   ├── index.php
+│   ├── login.php
+│   ├── produto.php
+│   └── [outras páginas]
+│
+├── database/                     # Scripts SQL
+│   └── dresscode_full_install.sql
+│
+├── docs/                         # Documentação
+│   ├── padroes_projeto.md
+│   └── ESTRUTURA.md
+│
+└── includes/                     # Arquivos reutilizáveis
+    ├── header.php
+    └── footer.php
+    </div>
+</div>
+
+<!-- PÁGINA 15: CONEXÃO MVC + REPOSITORY + PADRÕES -->
+<div class="page">
+    <h1>8. Conexão: MVC + Repository + Padrões GoF</h1>
+    
+    <h2>Exemplo Prático: Busca de Produtos</h2>
+    
+    <h3>1️⃣ Controller (MVC)</h3>
+    <div class="code-block">
+// ProductController.php
+class ProductController {
+    private $productRepository;
+    
+    public function __construct() {
+        // Usa Singleton para conexão
+        $db = DatabaseConnection::getInstance();
+        
+        // Injeta no Repository
+        $this->productRepository = new ProductRepository($db);
+    }
+    
+    public function search() {
+        $filters = $this->processFilters();
+        
+        // Usa Strategy + Decorator
+        $strategy = new BuscarProdutosStrategy(
+            $this->productRepository, 
+            $filters
+        );
+        
+        $produtos = $strategy->search();
+        
+        // Passa para View
+        include 'views/products/search.php';
+    }
+}
+    </div>
+    
+    <h3>2️⃣ Repository Pattern</h3>
+    <div class="code-block">
+// ProductRepository.php
+class ProductRepository {
+    private $pdo;
+    
+    public function __construct(PDO $pdo) {
+        $this->pdo = $pdo; // Recebe Singleton
+    }
+    
+    public function executarBusca($search): array {
+        // Executa SQL composto pelos Decorators
+        $sql = $search->getSQL();
+        $params = $search->getParams();
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
+    </div>
+    
+    <h3>3️⃣ Strategy + Decorator</h3>
+    <div class="code-block">
+// BuscarProdutosStrategy.php
+class BuscarProdutosStrategy implements SearchStrategy {
+    public function search(): array {
+        $search = new ProdutoSearchBase();
+        
+        // Aplica Decorators dinamicamente
+        if (isset($this->filters['categoria'])) {
+            $search = new FiltroCategoriaDecorator($search, ...);
+        }
+        
+        return $this->repo->executarBusca($search);
+    }
+}
+    </div>
+    
+    <h3>4️⃣ Factory Method</h3>
+    <div class="code-block">
+// Após buscar do banco, cria objetos tipados
+$produtos = $repository->search($filters);
+
+foreach ($produtos as $produtoData) {
+    $produto = ProductFactory::createFromDatabase($produtoData);
+    // Agora $produto tem métodos específicos do tipo
+}
+    </div>
+    
+    <h3>5️⃣ Observer</h3>
+    <div class="code-block">
+// Quando novo produto é adicionado
+$publisher = new ProductPublisher();
+$publisher->attach(new NotificationObserver());
+
+$publisher->notify('new_product', [
+    'product_id' => $produto->id,
+    'product_name' => $produto->nome
+]);
+
+// NotificationObserver cria notificações automaticamente
+    </div>
+</div>
+
+<!-- PÁGINA 16: BENEFÍCIOS DA ARQUITETURA -->
+<div class="page">
+    <h1>9. Benefícios da Arquitetura</h1>
+    
+    <h2>🎯 Separação de Responsabilidades</h2>
+    <table>
+        <tr>
+            <th>Camada</th>
+            <th>Responsabilidade</th>
+            <th>Não faz</th>
+        </tr>
+        <tr>
+            <td>Controller</td>
+            <td>Coordena fluxo</td>
+            <td>Não acessa banco diretamente</td>
+        </tr>
+        <tr>
+            <td>Repository</td>
+            <td>Acessa dados</td>
+            <td>Não renderiza HTML</td>
+        </tr>
+        <tr>
+            <td>Model</td>
+            <td>Regras de negócio</td>
+            <td>Não conhece HTTP</td>
+        </tr>
+        <tr>
+            <td>View</td>
+            <td>Apresentação</td>
+            <td>Não acessa banco</td>
+        </tr>
+    </table>
+    
+    <h2>✅ Vantagens Obtidas</h2>
+    
+    <h3>Manutenibilidade</h3>
+    <ul>
+        <li>Código organizado e modular</li>
+        <li>Fácil localização de bugs</li>
+        <li>Mudanças isoladas não afetam todo o sistema</li>
+        <li>Documentação clara da arquitetura</li>
+    </ul>
+    
+    <h3>Escalabilidade</h3>
+    <ul>
+        <li>Novos recursos podem ser adicionados facilmente</li>
+        <li>Padrões permitem extensão sem modificação</li>
+        <li>Sistema preparado para crescimento</li>
+        <li>Performance otimizada (Singleton, SQL eficiente)</li>
+    </ul>
+    
+    <h3>Testabilidade</h3>
+    <ul>
+        <li>Cada componente pode ser testado isoladamente</li>
+        <li>Injeção de dependência facilita mocks</li>
+        <li>Repositórios podem usar banco de teste</li>
+        <li>Padrões facilitam testes unitários</li>
+    </ul>
+    
+    <h3>Reutilização</h3>
+    <ul>
+        <li>Repositórios reutilizáveis em diferentes controllers</li>
+        <li>Decorators podem ser combinados de várias formas</li>
+        <li>Observers podem ser adicionados a múltiplos subjects</li>
+        <li>Factory centraliza criação de objetos</li>
+    </ul>
+    
+    <h3>Performance</h3>
+    <ul>
+        <li>Singleton evita múltiplas conexões</li>
+        <li>Decorators aplicam filtros no SQL (não em memória)</li>
+        <li>Queries otimizadas nos repositórios</li>
+        <li>Cache pode ser implementado facilmente</li>
+    </ul>
+</div>
+
+<!-- PÁGINA 17: COMPARAÇÃO ANTES/DEPOIS -->
+<div class="page">
+    <h1>10. Comparação: Antes vs Depois</h1>
+    
+    <h2>❌ Antes da Refatoração</h2>
+    <div class="code-block">
+// Código acoplado e difícil de manter
+$conn = new PDO("mysql:host=localhost;dbname=dresscode", "root", "");
+
+// SQL direto no controller
+$sql = "SELECT * FROM produtos WHERE 1=1";
+if ($_GET['cor']) {
+    $sql .= " AND cor = '" . $_GET['cor'] . "'"; // SQL Injection!
+}
+if ($_GET['preco_max']) {
+    $sql .= " AND preco <= " . $_GET['preco_max'];
+}
+
+$result = $conn->query($sql);
+$produtos = $result->fetchAll();
+
+// Lógica de negócio misturada
+foreach ($produtos as $p) {
+    if ($p['condicao'] == 'novo') {
+        $p['desconto'] = 0;
+    } else {
+        $p['desconto'] = 10;
+    }
+}
+
+// HTML misturado com PHP
+echo "<div>";
+foreach ($produtos as $p) {
+    echo "<h3>" . $p['nome'] . "</h3>";
+}
+echo "</div>";
+    </div>
+    
+    <h3>Problemas:</h3>
+    <ul>
+        <li>❌ SQL Injection vulnerável</li>
+        <li>❌ Múltiplas conexões de banco</li>
+        <li>❌ Código duplicado</li>
+        <li>❌ Difícil de testar</li>
+        <li>❌ Lógica misturada com apresentação</li>
+        <li>❌ Impossível reutilizar</li>
+    </ul>
+    
+    <h2>✅ Depois da Refatoração</h2>
+    <div class="code-block">
+// Controller limpo
+class ProductController {
+    public function search() {
+        $filters = $this->processFilters();
+        $strategy = new BuscarProdutosStrategy($this->repo, $filters);
+        $produtos = $strategy->search();
+        include 'views/products/search.php';
+    }
+}
+
+// Repository com prepared statements
+class ProductRepository {
+    public function executarBusca($search): array {
+        $stmt = $this->pdo->prepare($search->getSQL());
+        $stmt->execute($search->getParams());
+        return $stmt->fetchAll();
+    }
+}
+
+// Factory cria objetos tipados
+$produto = ProductFactory::createProduct($data);
+
+// View separada
+// views/products/search.php
+<?php foreach ($produtos as $produto): ?>
+    <div class="produto">
+        <h3><?= htmlspecialchars($produto['nome']) ?></h3>
+    </div>
+<?php endforeach; ?>
+    </div>
+    
+    <h3>Benefícios:</h3>
+    <ul>
+        <li>✅ Seguro contra SQL Injection</li>
+        <li>✅ Conexão única (Singleton)</li>
+        <li>✅ Código reutilizável</li>
+        <li>✅ Fácil de testar</li>
+        <li>✅ Separação clara de responsabilidades</li>
+        <li>✅ Manutenível e escalável</li>
+    </ul>
+</div>
+
+<!-- PÁGINA 18: MÉTRICAS -->
+<div class="page">
+    <h1>11. Métricas do Projeto</h1>
+    
+    <h2>📊 Estatísticas de Código</h2>
+    <table>
+        <tr>
+            <th>Métrica</th>
+            <th>Valor</th>
+        </tr>
+        <tr>
+            <td>Total de Arquivos PHP</td>
+            <td>~80 arquivos</td>
+        </tr>
+        <tr>
+            <td>Controllers</td>
+            <td>12 controllers</td>
+        </tr>
+        <tr>
+            <td>Models</td>
+            <td>10 models</td>
+        </tr>
+        <tr>
+            <td>Repositories</td>
+            <td>3 repositories</td>
+        </tr>
+        <tr>
+            <td>Padrões GoF</td>
+            <td>4 padrões implementados</td>
+        </tr>
+        <tr>
+            <td>Decorators</td>
+            <td>8 decorators de busca</td>
+        </tr>
+        <tr>
+            <td>Idiomas Suportados</td>
+            <td>4 idiomas</td>
+        </tr>
+        <tr>
+            <td>Tabelas no Banco</td>
+            <td>~15 tabelas</td>
+        </tr>
+    </table>
+    
+    <h2>🎯 Requisitos Implementados</h2>
+    <table>
+        <tr>
+            <th>Requisito</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>Cadastro de brechós</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Cadastro de produtos</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Sistema de busca com filtros</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Visualização de detalhes</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Gestão de perfil</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Avaliações e comentários</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Lista de desejos</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Personalização de interface</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Promoções e ofertas</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Segurança de dados</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Sistema de pagamento</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Notificações</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Múltiplos idiomas</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Dashboard de vendas</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Relatórios em PDF</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Busca por localização</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>FAQ</td>
+            <td>✅ Completo</td>
+        </tr>
+        <tr>
+            <td>Reportar problemas</td>
+            <td>✅ Completo</td>
+        </tr>
+    </table>
+    
+    <div class="highlight">
+        <strong>🎉 100% dos requisitos implementados!</strong>
+    </div>
+</div>
+
+<!-- PÁGINA 19: CONCLUSÃO -->
+<div class="page">
+    <h1>12. Conclusão</h1>
+    
+    <h2>🎓 Aprendizados</h2>
+    <p>
+        O projeto DressCode demonstra a aplicação prática de conceitos fundamentais de engenharia de software:
+    </p>
+    
+    <ul>
+        <li><strong>Arquitetura MVC:</strong> Separação clara entre lógica, dados e apresentação</li>
+        <li><strong>Repository Pattern:</strong> Abstração da camada de dados</li>
+        <li><strong>Padrões GoF:</strong> Soluções elegantes para problemas recorrentes</li>
+        <li><strong>SOLID:</strong> Princípios aplicados em toda a arquitetura</li>
+        <li><strong>Clean Code:</strong> Código legível e manutenível</li>
+    </ul>
+    
+    <h2>🚀 Resultados Alcançados</h2>
+    
+    <div class="pattern-box">
+        <h3>Qualidade de Código</h3>
+        <ul>
+            <li>✅ Código organizado e modular</li>
+            <li>✅ Baixo acoplamento entre componentes</li>
+            <li>✅ Alta coesão dentro de cada módulo</li>
+            <li>✅ Fácil manutenção e extensão</li>
+        </ul>
+    </div>
+    
+    <div class="pattern-box">
+        <h3>Performance</h3>
+        <ul>
+            <li>✅ Conexão única com banco (Singleton)</li>
+            <li>✅ Queries otimizadas (Repository)</li>
+            <li>✅ Filtros aplicados no SQL (Decorator)</li>
+            <li>✅ Sistema escalável</li>
+        </ul>
+    </div>
+    
+    <div class="pattern-box">
+        <h3>Segurança</h3>
+        <ul>
+            <li>✅ Proteção contra SQL Injection</li>
+            <li>✅ Senhas criptografadas</li>
+            <li>✅ Validação de inputs</li>
+            <li>✅ Conformidade com LGPD</li>
+        </ul>
+    </div>
+    
+    <h2>💡 Diferenciais do Projeto</h2>
+    <ol>
+        <li><strong>Arquitetura Profissional:</strong> Não é apenas um CRUD, mas um sistema bem arquitetado</li>
+        <li><strong>Padrões de Projeto:</strong> Implementação real de 4 padrões GoF</li>
+        <li><strong>Boas Práticas:</strong> Código seguindo padrões da indústria</li>
+        <li><strong>Escalabilidade:</strong> Preparado para crescimento</li>
+        <li><strong>Documentação:</strong> Código e arquitetura bem documentados</li>
+    </ol>
+    
+    <h2>🔮 Possíveis Evoluções</h2>
+    <ul>
+        <li>Implementar cache (Redis) com padrão Proxy</li>
+        <li>Adicionar testes automatizados (PHPUnit)</li>
+        <li>Implementar API RESTful</li>
+        <li>Adicionar sistema de chat (WebSockets)</li>
+        <li>Implementar padrão Command para ações reversíveis</li>
+        <li>Adicionar sistema de recomendações (Machine Learning)</li>
+    </ul>
+</div>
+
+<!-- PÁGINA 20: REFERÊNCIAS -->
+<div class="page">
+    <h1>13. Referências e Recursos</h1>
+    
+    <h2>📚 Bibliografia</h2>
+    <ul>
+        <li><strong>Design Patterns: Elements of Reusable Object-Oriented Software</strong><br>
+        Gamma, Helm, Johnson, Vlissides (Gang of Four)</li>
+        
+        <li><strong>Clean Code: A Handbook of Agile Software Craftsmanship</strong><br>
+        Robert C. Martin</li>
+        
+        <li><strong>Patterns of Enterprise Application Architecture</strong><br>
+        Martin Fowler</li>
+        
+        <li><strong>PHP Objects, Patterns, and Practice</strong><br>
+        Matt Zandstra</li>
+    </ul>
+    
+    <h2>🔗 Links Úteis</h2>
+    <ul>
+        <li><strong>Documentação PHP:</strong> https://www.php.net/</li>
+        <li><strong>Refactoring Guru (Padrões):</strong> https://refactoring.guru/</li>
+        <li><strong>PHP The Right Way:</strong> https://phptherightway.com/</li>
+    </ul>
+    
+    <h2>📁 Documentação do Projeto</h2>
+    <ul>
+        <li><code>docs/padroes_projeto.md</code> - Detalhes dos padrões GoF</li>
+        <li><code>docs/ESTRUTURA.md</code> - Estrutura de diretórios</li>
+        <li><code>docs/INSTALACAO.md</code> - Guia de instalação</li>
+        <li><code>README.md</code> - Visão geral do projeto</li>
+    </ul>
+    
+    <h2>👥 Equipe de Desenvolvimento</h2>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Matrícula</th>
+            <th>Função</th>
+        </tr>
+        <tr>
+            <td>Maria Eduarda Oliveira</td>
+            <td>22301275</td>
+            <td>Líder</td>
+        </tr>
+        <tr>
+            <td>Maria Eduarda Rosa</td>
+            <td>22402080</td>
+            <td>Desenvolvedora</td>
+        </tr>
+        <tr>
+            <td>Kauan Alves Coelho</td>
+            <td>22302255</td>
+            <td>Arquiteto Principal</td>
+        </tr>
+        <tr>
+            <td>Giovana Tassi</td>
+            <td>22403094</td>
+            <td>Desenvolvedora</td>
+        </tr>
+        <tr>
+            <td>Nicolas Peres</td>
+            <td>22302409</td>
+            <td>Desenvolvedor</td>
+        </tr>
+        <tr>
+            <td>Moises</td>
+            <td>22301313</td>
+            <td>Desenvolvedor</td>
+        </tr>
+    </table>
+    
+    <div class="footer">
+        <p><strong>DressCode - Sistema de Brechós Online</strong></p>
+        <p>Projeto Acadêmico - 2024</p>
+        <p>Arquitetura MVC + Repository Pattern + Padrões GoF</p>
+    </div>
+</div>
+
+</body>
+</html>

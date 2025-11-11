@@ -1,0 +1,419 @@
+<!-- PÁGINA 8: OBSERVER PATTERN -->
+<div class="page">
+    <h1>4. Padrões GoF - Observer</h1>
+    
+    <div class="pattern-box">
+        <h3>👁️ Observer Pattern</h3>
+        <p><strong>Categoria:</strong> Comportamental</p>
+        <p><strong>Objetivo:</strong> Definir uma dependência um-para-muitos entre objetos, de modo que quando um objeto muda de estado, todos os seus dependentes são notificados.</p>
+    </div>
+    
+    <h2>Onde foi aplicado?</h2>
+    <p>
+        <strong>Arquivos:</strong><br>
+        - <code>app/observers/Observer.php</code> (interface)<br>
+        - <code>app/observers/Subject.php</code> (interface)<br>
+        - <code>app/observers/ProductPublisher.php</code> (subject)<br>
+        - <code>app/observers/NotificationObserver.php</code> (observer)
+    </p>
+    
+    <h2>Sistema de Notificações</h2>
+    <p>
+        O Observer foi implementado para desacoplar o sistema de notificações. Quando um evento ocorre 
+        (novo produto, promoção), os observadores são automaticamente notificados.
+    </p>
+    
+    <div class="diagram">
+        <h3>Fluxo do Observer</h3>
+        <pre style="text-align: left;">
+┌──────────────────────┐
+│  ProductPublisher    │ (Subject)
+│  - attach()          │
+│  - detach()          │
+│  - notify()          │
+└──────────┬───────────┘
+           │
+           │ notify("new_product", data)
+           │
+           ▼
+┌──────────────────────────────────┐
+│  NotificationObserver            │
+│  - update(eventType, data)       │
+│  - handleNewProduct()            │
+│  - handlePromotion()             │
+│  - createNotificationForAllUsers()│
+└──────────────────────────────────┘
+           │
+           ▼
+    [Banco de Dados]
+    Tabela: notificacoes
+        </pre>
+    </div>
+    
+    <h2>Eventos Suportados</h2>
+    <ul>
+        <li><strong>new_product:</strong> Quando um novo produto é adicionado</li>
+        <li><strong>promotion:</strong> Quando uma promoção é criada</li>
+        <li><strong>store_update:</strong> Quando um brechó é atualizado</li>
+        <li><strong>product_promotion:</strong> Quando um produto entra em promoção</li>
+    </ul>
+    
+    <h2>Implementação</h2>
+    <div class="code-block">
+// Observer Interface
+interface Observer {
+    public function update(string $eventType, array $data): void;
+}
+
+// Subject Interface
+interface Subject {
+    public function attach(Observer $observer): void;
+    public function detach(Observer $observer): void;
+    public function notify(string $eventType, array $data): void;
+}
+
+// Implementação Concreta
+class NotificationObserver implements Observer {
+    public function update(string $eventType, array $data): void {
+        switch ($eventType) {
+            case 'new_product':
+                $this->handleNewProduct($data);
+                break;
+            case 'promotion':
+                $this->handlePromotion($data);
+                break;
+        }
+    }
+    
+    private function handleNewProduct(array $data): void {
+        $titulo = "Novo produto disponível!";
+        $mensagem = "O produto '{$data['product_name']}' foi adicionado.";
+        $this->createNotificationForAllUsers($titulo, $mensagem);
+    }
+}
+    </div>
+    
+    <div class="highlight">
+        <strong>✅ Benefício:</strong> Sistema de notificações totalmente desacoplado. Novos tipos de 
+        observadores podem ser adicionados sem modificar o código existente.
+    </div>
+</div>
+
+<!-- PÁGINA 9: STRATEGY + DECORATOR PATTERN -->
+<div class="page">
+    <h1>4. Padrões GoF - Strategy + Decorator</h1>
+    
+    <div class="pattern-box">
+        <h3>🎯 Strategy Pattern</h3>
+        <p><strong>Categoria:</strong> Comportamental</p>
+        <p><strong>Objetivo:</strong> Definir uma família de algoritmos, encapsular cada um deles e torná-los intercambiáveis.</p>
+    </div>
+    
+    <div class="pattern-box">
+        <h3>🎨 Decorator Pattern</h3>
+        <p><strong>Categoria:</strong> Estrutural</p>
+        <p><strong>Objetivo:</strong> Anexar responsabilidades adicionais a um objeto dinamicamente.</p>
+    </div>
+    
+    <h2>Onde foi aplicado?</h2>
+    <p>
+        <strong>Arquivos:</strong><br>
+        - <code>app/search/SearchStrategy.php</code><br>
+        - <code>app/search/BuscarProdutosStrategy.php</code><br>
+        - <code>app/search/ProdutoSearchBase.php</code><br>
+        - <code>app/search/decorators/</code> (8 decorators)
+    </p>
+    
+    <h2>Sistema de Busca Flexível</h2>
+    <p>
+        A combinação Strategy + Decorator cria um sistema de busca altamente flexível onde:
+    </p>
+    <ul>
+        <li><strong>Strategy:</strong> Define o contexto de busca (produtos, lojas, etc.)</li>
+        <li><strong>Decorator:</strong> Aplica filtros dinamicamente (categoria, preço, cor, etc.)</li>
+    </ul>
+    
+    <h2>Decorators Disponíveis</h2>
+    <table>
+        <tr>
+            <th>Decorator</th>
+            <th>Função</th>
+        </tr>
+        <tr>
+            <td>FiltroCategoriaDecorator</td>
+            <td>Filtra por categoria</td>
+        </tr>
+        <tr>
+            <td>FiltroPrecoMinDecorator</td>
+            <td>Filtra por preço mínimo</td>
+        </tr>
+        <tr>
+            <td>FiltroPrecoMaxDecorator</td>
+            <td>Filtra por preço máximo</td>
+        </tr>
+        <tr>
+            <td>FiltroMarcaDecorator</td>
+            <td>Filtra por marca</td>
+        </tr>
+        <tr>
+            <td>FiltroCorDecorator</td>
+            <td>Filtra por cor</td>
+        </tr>
+        <tr>
+            <td>FiltroTamanhoDecorator</td>
+            <td>Filtra por tamanho</td>
+        </tr>
+        <tr>
+            <td>FiltroCondicaoDecorator</td>
+            <td>Filtra por condição</td>
+        </tr>
+        <tr>
+            <td>FiltroTextoDecorator</td>
+            <td>Busca textual</td>
+        </tr>
+    </table>
+</div>
+
+<!-- PÁGINA 10: STRATEGY + DECORATOR IMPLEMENTAÇÃO -->
+<div class="page">
+    <h1>Strategy + Decorator - Implementação</h1>
+    
+    <h2>Fluxo de Busca</h2>
+    <div class="diagram">
+        <pre style="text-align: left;">
+1. ProductController recebe filtros do usuário
+   ↓
+2. BuscarProdutosStrategy é instanciada
+   ↓
+3. Strategy aplica Decorators dinamicamente:
+   - ProdutoSearchBase (busca base)
+   - + FiltroCategoriaDecorator (se categoria informada)
+   - + FiltroPrecoMaxDecorator (se preço máximo informado)
+   - + FiltroCorDecorator (se cor informada)
+   ↓
+4. Cada Decorator modifica o SQL:
+   - Adiciona cláusulas WHERE
+   - Adiciona parâmetros
+   ↓
+5. ProductRepository executa SQL final
+   ↓
+6. Retorna resultados filtrados
+        </pre>
+    </div>
+    
+    <h2>Código da Strategy</h2>
+    <div class="code-block">
+class BuscarProdutosStrategy implements SearchStrategy {
+    private $repo;
+    private array $filters;
+    
+    public function search(): array {
+        // 1. Busca base
+        $search = new ProdutoSearchBase();
+        
+        // 2. Aplica decorators dinamicamente
+        if (isset($this->filters['categoria'])) {
+            $search = new FiltroCategoriaDecorator(
+                $search, 
+                $this->filters['categoria']
+            );
+        }
+        
+        if (isset($this->filters['preco_max'])) {
+            $search = new FiltroPrecoMaxDecorator(
+                $search, 
+                $this->filters['preco_max']
+            );
+        }
+        
+        // 3. Executa no repository
+        return $this->repo->executarBusca($search);
+    }
+}
+    </div>
+    
+    <h2>Código do Decorator</h2>
+    <div class="code-block">
+class FiltroCategoriaDecorator implements ProdutoSearchInterface {
+    private $busca;
+    private $categoria;
+    
+    public function __construct($busca, $categoria) {
+        $this->busca = $busca;
+        $this->categoria = $categoria;
+    }
+    
+    public function getSQL(): string {
+        return $this->busca->getSQL() . " AND c.slug = :categoria";
+    }
+    
+    public function getParams(): array {
+        $params = $this->busca->getParams();
+        $params[':categoria'] = $this->categoria;
+        return $params;
+    }
+}
+    </div>
+    
+    <div class="highlight">
+        <strong>✅ Benefício:</strong> Filtros são aplicados a nível de SQL (eficiente), 
+        podem ser combinados dinamicamente, e novos filtros são fáceis de adicionar.
+    </div>
+</div>
+
+<!-- PÁGINA 11: INTEGRAÇÃO DOS PADRÕES -->
+<div class="page">
+    <h1>5. Integração dos Padrões</h1>
+    
+    <h2>Como os Padrões Trabalham Juntos</h2>
+    
+    <div class="diagram">
+        <h3>Fluxo Completo de uma Busca de Produtos</h3>
+        <pre style="text-align: left; font-size: 14px;">
+┌─────────────────────────────────────────────────────┐
+│ 1. USUÁRIO faz busca por "vestido vermelho < R$100" │
+└────────────────────┬────────────────────────────────┘
+                     ▼
+┌─────────────────────────────────────────────────────┐
+│ 2. ProductController recebe requisição             │
+│    - Extrai filtros: cor=vermelho, preco_max=100   │
+└────────────────────┬────────────────────────────────┘
+                     ▼
+┌─────────────────────────────────────────────────────┐
+│ 3. Singleton: DatabaseConnection::getInstance()    │
+│    - Retorna conexão PDO única                     │
+└────────────────────┬────────────────────────────────┘
+                     ▼
+┌─────────────────────────────────────────────────────┐
+│ 4. Repository: new ProductRepository($db)          │
+│    - Recebe conexão Singleton                      │
+└────────────────────┬────────────────────────────────┘
+                     ▼
+┌─────────────────────────────────────────────────────┐
+│ 5. Strategy: new BuscarProdutosStrategy()          │
+│    - Aplica Decorators:                            │
+│      * FiltroCorDecorator("vermelho")              │
+│      * FiltroPrecoMaxDecorator(100)                │
+└────────────────────┬────────────────────────────────┘
+                     ▼
+┌─────────────────────────────────────────────────────┐
+│ 6. Repository executa SQL composto                 │
+│    SELECT * FROM produtos                          │
+│    WHERE cor = 'vermelho' AND preco <= 100         │
+└────────────────────┬────────────────────────────────┘
+                     ▼
+┌─────────────────────────────────────────────────────┐
+│ 7. Factory: ProductFactory::createFromDatabase()   │
+│    - Cria objetos Product tipados                  │
+└────────────────────┬────────────────────────────────┘
+                     ▼
+┌─────────────────────────────────────────────────────┐
+│ 8. Observer: Se novo produto, notifica usuários    │
+│    - ProductPublisher->notify("new_product")       │
+│    - NotificationObserver cria notificações        │
+└────────────────────┬────────────────────────────────┘
+                     ▼
+┌─────────────────────────────────────────────────────┐
+│ 9. View renderiza resultados para o usuário        │
+└─────────────────────────────────────────────────────┘
+        </pre>
+    </div>
+    
+    <h2>Relações Entre Padrões</h2>
+    <table>
+        <tr>
+            <th>Padrão 1</th>
+            <th>Padrão 2</th>
+            <th>Relação</th>
+        </tr>
+        <tr>
+            <td>Singleton</td>
+            <td>Repository</td>
+            <td>Conexão única injetada nos repositórios</td>
+        </tr>
+        <tr>
+            <td>Factory</td>
+            <td>Observer</td>
+            <td>Produtos criados podem disparar eventos</td>
+        </tr>
+        <tr>
+            <td>Strategy</td>
+            <td>Decorator</td>
+            <td>Strategy usa Decorators para compor filtros</td>
+        </tr>
+        <tr>
+            <td>Repository</td>
+            <td>Strategy</td>
+            <td>Repository executa buscas compostas</td>
+        </tr>
+    </table>
+</div>
+
+<!-- PÁGINA 12: FUNCIONALIDADES -->
+<div class="page">
+    <h1>6. Funcionalidades do Sistema</h1>
+    
+    <h2>Módulos Principais</h2>
+    
+    <h3>🔐 Autenticação e Autorização</h3>
+    <ul>
+        <li>Cadastro de usuários (compradores e vendedores)</li>
+        <li>Login com validação de credenciais</li>
+        <li>Recuperação de senha</li>
+        <li>Perfis diferenciados (usuário/brechó)</li>
+    </ul>
+    
+    <h3>🛍️ Gestão de Produtos</h3>
+    <ul>
+        <li>Cadastro de produtos com múltiplos atributos</li>
+        <li>Upload de imagens</li>
+        <li>Categorização (feminino, masculino, acessórios, etc.)</li>
+        <li>Controle de estoque e status</li>
+        <li>Sistema de favoritos</li>
+    </ul>
+    
+    <h3>🔍 Sistema de Busca Avançado</h3>
+    <ul>
+        <li>Busca por texto (nome, descrição, marca)</li>
+        <li>Filtros múltiplos: categoria, cor, tamanho, marca, condição</li>
+        <li>Filtro por faixa de preço</li>
+        <li>Ordenação (mais recente, menor preço, mais visualizado)</li>
+        <li>Busca por localização geográfica</li>
+        <li>Paginação de resultados</li>
+    </ul>
+    
+    <h3>📍 Busca de Brechós</h3>
+    <ul>
+        <li>Busca por cidade/endereço</li>
+        <li>Busca por geolocalização (raio de 50km)</li>
+        <li>Exibição de distância</li>
+        <li>Informações de contato</li>
+    </ul>
+    
+    <h3>💳 Sistema de Pagamento</h3>
+    <ul>
+        <li>Integração com gateway de pagamento</li>
+        <li>Suporte a PIX</li>
+        <li>Histórico de pagamentos</li>
+        <li>Taxa de anúncio para brechós</li>
+    </ul>
+    
+    <h3>🔔 Sistema de Notificações</h3>
+    <ul>
+        <li>Notificações de novos produtos</li>
+        <li>Alertas de promoções</li>
+        <li>Atualizações de brechós favoritos</li>
+        <li>Notificações em tempo real</li>
+        <li>Controle de preferências</li>
+    </ul>
+    
+    <h3>📊 Dashboard para Vendedores</h3>
+    <ul>
+        <li>Visão geral de vendas</li>
+        <li>Gráficos de performance</li>
+        <li>Produtos mais visualizados</li>
+        <li>Relatórios em PDF</li>
+        <li>Gestão de anúncios</li>
+    </ul>
+</div>
+

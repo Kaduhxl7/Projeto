@@ -1,0 +1,48 @@
+# Arquivos de configuração local
+.env
+*.log
+*.tmp
+
+# Uploads de usuários
+public/assets/uploads/
+
+# Arquivos temporários
+*.php~
+*.bak
+*.old
+*.cache
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Pastas organizacionais
+/backups/
+/temp/
+
+# Dependências
+vendor/
+composer.lock
+node_modules/
+
+# Cache
+cache/
+storage/
+
+# Logs
+logs/
+
+# Arquivos compactados
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Scripts temporários de setup
+create-*.php
+fix-*.php
+update-*.php
+setup-*.php
+test-*.php
+testar-*.php
+verificar-*.php
