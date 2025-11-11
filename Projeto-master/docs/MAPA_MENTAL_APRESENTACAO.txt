@@ -1,0 +1,403 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║                    📚 MAPA MENTAL - APRESENTAÇÃO DRESSCODE                    ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+
+                              🛍️ PROJETO DRESSCODE
+                                      │
+                ┌─────────────────────┼─────────────────────┐
+                │                     │                     │
+          🏗️ ARQUITETURA        🎯 PADRÕES GOF       ⚙️ FUNCIONALIDADES
+                │                     │                     │
+        ┌───────┴───────┐     ┌───────┴───────┐     ┌───────┴───────┐
+        │               │     │               │     │               │
+      📁 MVC      🗄️ REPOSITORY │         │     🔍 BUSCA    💳 PAGAMENTO
+        │               │     │               │     │               │
+    ┌───┴───┐       ┌───┴───┐ │         │     │               │
+    │   │   │       │   │   │ │         │     │               │
+  MODEL VIEW CTRL  PRODUCT CATEGORY │   │     │               │
+                   REPOSITORY        │   │     │               │
+                                     │   │     │               │
+                              ┌──────┴───┴─────┴──────┐        │
+                              │                       │        │
+                        🔧 SINGLETON          🏭 FACTORY        │
+                              │                       │        │
+                      DatabaseConnection      ProductFactory   │
+                              │                       │        │
+                        Conexão Única          Tipos Produtos  │
+                                                               │
+                              ┌────────────────────────────────┘
+                              │
+                        👁️ OBSERVER
+                              │
+                    ┌─────────┴─────────┐
+                    │                   │
+              ProductPublisher   NotificationObserver
+                    │                   │
+              Dispara Eventos    Cria Notificações
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+                          🎯 PADRÕES GOF DETALHADOS
+
+
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                                                                 │
+    │  🔧 SINGLETON                                                   │
+    │  ├─ Arquivo: DatabaseConnection.php                            │
+    │  ├─ Problema: Múltiplas conexões desperdiçam recursos          │
+    │  ├─ Solução: Instância única de PDO                            │
+    │  └─ Benefício: Performance + Controle                          │
+    │                                                                 │
+    └─────────────────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                                                                 │
+    │  🏭 FACTORY METHOD                                              │
+    │  ├─ Arquivo: ProductFactory.php                                │
+    │  ├─ Problema: Criar diferentes tipos de produtos               │
+    │  ├─ Solução: Factory centralizada                              │
+    │  ├─ Tipos: Novo, Usado, Promocional, Vintage                   │
+    │  └─ Benefício: Extensibilidade sem modificar código            │
+    │                                                                 │
+    └─────────────────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                                                                 │
+    │  👁️ OBSERVER                                                    │
+    │  ├─ Arquivos: observers/                                       │
+    │  ├─ Problema: Notificações acopladas ao código                 │
+    │  ├─ Solução: Padrão Observer                                   │
+    │  ├─ Eventos: new_product, promotion, store_update              │
+    │  └─ Benefício: Sistema desacoplado e extensível                │
+    │                                                                 │
+    └─────────────────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                                                                 │
+    │  🎯 STRATEGY + DECORATOR                                        │
+    │  ├─ Arquivos: search/                                          │
+    │  ├─ Problema: Busca inflexível                                 │
+    │  ├─ Solução: Strategy define contexto, Decorator adiciona      │
+    │  ├─ Decorators: 8 filtros (categoria, preço, cor, etc.)        │
+    │  └─ Benefício: Filtros dinâmicos aplicados no SQL              │
+    │                                                                 │
+    └─────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+                        🔄 FLUXO DE UMA REQUISIÇÃO
+
+
+    ┌─────────────┐
+    │   USUÁRIO   │  Busca: "vestido vermelho < R$100"
+    └──────┬──────┘
+           │
+           ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │  CONTROLLER (ProductController)                             │
+    │  ├─ Recebe requisição HTTP                                  │
+    │  ├─ Extrai filtros: cor=vermelho, preco_max=100             │
+    │  └─ Coordena fluxo                                          │
+    └──────┬──────────────────────────────────────────────────────┘
+           │
+           ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │  SINGLETON (DatabaseConnection)                             │
+    │  └─ Retorna conexão PDO única                               │
+    └──────┬──────────────────────────────────────────────────────┘
+           │
+           ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │  REPOSITORY (ProductRepository)                             │
+    │  └─ Recebe conexão Singleton                                │
+    └──────┬──────────────────────────────────────────────────────┘
+           │
+           ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │  STRATEGY (BuscarProdutosStrategy)                          │
+    │  ├─ Aplica Decorators:                                      │
+    │  │  ├─ FiltroCorDecorator("vermelho")                       │
+    │  │  └─ FiltroPrecoMaxDecorator(100)                         │
+    │  └─ Compõe SQL dinamicamente                                │
+    └──────┬──────────────────────────────────────────────────────┘
+           │
+           ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │  REPOSITORY executa SQL                                     │
+    │  SELECT * FROM produtos                                     │
+    │  WHERE cor = 'vermelho' AND preco <= 100                    │
+    └──────┬──────────────────────────────────────────────────────┘
+           │
+           ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │  FACTORY (ProductFactory)                                   │
+    │  └─ Cria objetos Product tipados                            │
+    └──────┬──────────────────────────────────────────────────────┘
+           │
+           ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │  VIEW (products/search.php)                                 │
+    │  └─ Renderiza HTML com resultados                           │
+    └──────┬──────────────────────────────────────────────────────┘
+           │
+           ▼
+    ┌─────────────┐
+    │   USUÁRIO   │  Vê resultados filtrados
+    └─────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+                          📊 ESTRUTURA DO PROJETO
+
+
+    DressCode/
+    │
+    ├── app/                          # Arquitetura MVC
+    │   │
+    │   ├── config/                   # Configurações
+    │   │   └── DatabaseConnection.php    # 🔧 SINGLETON
+    │   │
+    │   ├── controllers/              # Controllers MVC
+    │   │   └── ProductController.php
+    │   │
+    │   ├── models/                   # Models MVC
+    │   │   └── Product.php
+    │   │
+    │   ├── views/                    # Views MVC
+    │   │   └── products/
+    │   │
+    │   ├── repositories/             # 🗄️ REPOSITORY PATTERN
+    │   │   ├── ProductRepository.php
+    │   │   └── CategoryRepository.php
+    │   │
+    │   ├── factories/                # 🏭 FACTORY METHOD
+    │   │   └── ProductFactory.php
+    │   │
+    │   ├── observers/                # 👁️ OBSERVER
+    │   │   ├── Observer.php
+    │   │   ├── Subject.php
+    │   │   ├── ProductPublisher.php
+    │   │   └── NotificationObserver.php
+    │   │
+    │   └── search/                   # 🎯 STRATEGY + DECORATOR
+    │       ├── SearchStrategy.php
+    │       ├── BuscarProdutosStrategy.php
+    │       ├── ProdutoSearchBase.php
+    │       └── decorators/
+    │           ├── FiltroCategoriaDecorator.php
+    │           ├── FiltroPrecoMaxDecorator.php
+    │           ├── FiltroCorDecorator.php
+    │           └── [6 outros decorators]
+    │
+    └── public/                       # Ponto de entrada
+        ├── index.php
+        └── assets/
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+                        ✅ BENEFÍCIOS ALCANÇADOS
+
+
+    ┌─────────────────────────────────────────────────────────────┐
+    │  🎯 SEPARAÇÃO DE RESPONSABILIDADES                          │
+    │  ├─ Controller: Coordena fluxo                              │
+    │  ├─ Repository: Acessa dados                                │
+    │  ├─ Model: Regras de negócio                                │
+    │  └─ View: Apresentação                                      │
+    └─────────────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────────────┐
+    │  🔧 MANUTENIBILIDADE                                        │
+    │  ├─ Código organizado e modular                             │
+    │  ├─ Fácil localização de bugs                               │
+    │  └─ Mudanças isoladas                                       │
+    └─────────────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────────────┐
+    │  🚀 ESCALABILIDADE                                          │
+    │  ├─ Novos recursos facilmente adicionáveis                  │
+    │  ├─ Padrões permitem extensão                               │
+    │  └─ Sistema preparado para crescimento                      │
+    └─────────────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────────────┐
+    │  🧪 TESTABILIDADE                                           │
+    │  ├─ Componentes testáveis isoladamente                      │
+    │  ├─ Injeção de dependência facilita mocks                   │
+    │  └─ Repositórios podem usar banco de teste                  │
+    └─────────────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────────────┐
+    │  ⚡ PERFORMANCE                                             │
+    │  ├─ Singleton: conexão única                                │
+    │  ├─ Decorators: filtros no SQL                              │
+    │  └─ Queries otimizadas                                      │
+    └─────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+                        📈 MÉTRICAS DO PROJETO
+
+
+    ┌──────────────────────────────────────────────────────────┐
+    │  CÓDIGO                                                  │
+    │  ├─ 80 arquivos PHP                                      │
+    │  ├─ 12 controllers                                       │
+    │  ├─ 10 models                                            │
+    │  ├─ 3 repositories                                       │
+    │  └─ 8 decorators                                         │
+    └──────────────────────────────────────────────────────────┘
+
+    ┌──────────────────────────────────────────────────────────┐
+    │  PADRÕES                                                 │
+    │  ├─ 4 padrões GoF implementados                          │
+    │  ├─ 1 padrão arquitetural (MVC)                          │
+    │  └─ 1 padrão de acesso a dados (Repository)              │
+    └──────────────────────────────────────────────────────────┘
+
+    ┌──────────────────────────────────────────────────────────┐
+    │  FUNCIONALIDADES                                         │
+    │  ├─ 18 requisitos implementados                          │
+    │  ├─ 100% de completude                                   │
+    │  ├─ 4 idiomas suportados                                 │
+    │  └─ 15 tabelas no banco                                  │
+    └──────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+                    🎤 ROTEIRO DE APRESENTAÇÃO (30 MIN)
+
+
+    ┌────────────────────────────────────────────────────────────────┐
+    │  ⏱️ 2 min  │  INTRODUÇÃO                                       │
+    │           │  ├─ Apresentar equipe                             │
+    │           │  ├─ Contextualizar DressCode                      │
+    │           │  └─ Mencionar tecnologias                         │
+    ├────────────────────────────────────────────────────────────────┤
+    │  ⏱️ 5 min  │  MVC + REPOSITORY                                 │
+    │           │  ├─ Explicar conceito MVC                         │
+    │           │  ├─ Mostrar diagrama de fluxo                     │
+    │           │  └─ Demonstrar Repository Pattern                 │
+    ├────────────────────────────────────────────────────────────────┤
+    │  ⏱️ 12 min │  PADRÕES GOF                                      │
+    │           │  ├─ Singleton (3 min)                             │
+    │           │  ├─ Factory Method (3 min)                        │
+    │           │  ├─ Observer (3 min)                              │
+    │           │  └─ Strategy + Decorator (3 min)                  │
+    ├────────────────────────────────────────────────────────────────┤
+    │  ⏱️ 3 min  │  INTEGRAÇÃO                                       │
+    │           │  ├─ Como padrões trabalham juntos                 │
+    │           │  └─ Fluxo completo de requisição                  │
+    ├────────────────────────────────────────────────────────────────┤
+    │  ⏱️ 3 min  │  DEMONSTRAÇÃO PRÁTICA                             │
+    │           │  ├─ Sistema funcionando                           │
+    │           │  ├─ Busca com filtros                             │
+    │           │  └─ Notificações                                  │
+    ├────────────────────────────────────────────────────────────────┤
+    │  ⏱️ 3 min  │  RESULTADOS                                       │
+    │           │  ├─ Métricas do projeto                           │
+    │           │  └─ Comparação antes/depois                       │
+    ├────────────────────────────────────────────────────────────────┤
+    │  ⏱️ 2 min  │  CONCLUSÃO                                        │
+    │           │  ├─ Benefícios alcançados                         │
+    │           │  ├─ Aprendizados                                  │
+    │           │  └─ Perguntas                                     │
+    └────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+                        💡 PONTOS-CHAVE PARA DESTACAR
+
+
+    🎯 "Não é apenas um CRUD, é um sistema profissionalmente arquitetado"
+
+    🔧 "Singleton garante conexão única, economizando recursos"
+
+    🏭 "Factory permite adicionar novos tipos sem modificar código"
+
+    👁️ "Observer desacopla notificações do resto do sistema"
+
+    🎨 "Strategy + Decorator criam busca super flexível"
+
+    📊 "100% dos requisitos implementados com qualidade"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+                            📚 ARQUIVOS CRIADOS
+
+
+    ┌─────────────────────────────────────────────────────────────┐
+    │  APRESENTAÇÃO (HTML)                                        │
+    │  ├─ APRESENTACAO_DRESSCODE.html (Páginas 1-7)              │
+    │  ├─ APRESENTACAO_DRESSCODE_PARTE2.html (Páginas 8-12)      │
+    │  └─ APRESENTACAO_DRESSCODE_PARTE3.html (Páginas 13-20)     │
+    └─────────────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────────────┐
+    │  DOCUMENTAÇÃO                                               │
+    │  ├─ README_APRESENTACAO.md (Índice completo)               │
+    │  ├─ RESUMO_APRESENTACAO.md (Roteiro detalhado)             │
+    │  ├─ GUIA_CONVERSAO_PDF.md (Como converter)                 │
+    │  ├─ QUICK_START_APRESENTACAO.md (Guia rápido)              │
+    │  ├─ INDICE_ARQUIVOS_APRESENTACAO.md (Lista arquivos)       │
+    │  └─ MAPA_MENTAL_APRESENTACAO.txt (Este arquivo)            │
+    └─────────────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────────────┐
+    │  UTILITÁRIOS                                                │
+    │  └─ abrir_apresentacao.bat (Script Windows)                │
+    └─────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+                            ✅ CHECKLIST RÁPIDO
+
+
+    ANTES DA APRESENTAÇÃO:
+    □ Converter HTML para PDF
+    □ Sistema rodando (localhost:8000)
+    □ Código aberto em IDE
+    □ Roteiro estudado
+    □ Timing ensaiado
+
+    DURANTE A APRESENTAÇÃO:
+    □ Seguir roteiro de 30 min
+    □ Mostrar diagramas
+    □ Demonstrar sistema
+    □ Destacar padrões GoF
+    □ Responder perguntas
+
+    APÓS A APRESENTAÇÃO:
+    □ Agradecer atenção
+    □ Disponibilizar material
+    □ Coletar feedback
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+                        🎓 BOA APRESENTAÇÃO! 🚀
+
+
+═══════════════════════════════════════════════════════════════════════════════

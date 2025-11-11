@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação Projeto DressCode - Arquitetura e Padrões</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            page-break-after: always;
+        }
+        
+        .cover {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 257mm;
+        }
+        
+        .cover h1 {
+            font-size: 48px;
+            color: #5e2b2b;
+            margin-bottom: 20px;
+        }
+        
+        .cover h2 {
+            font-size: 32px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        
+        .cover .subtitle {
+            font-size: 24px;
+            color: #888;
+            margin-bottom: 60px;
+        }
+        
+        .cover .team {
+            font-size: 18px;
+            color: #666;
+            line-height: 2;
+        }
+        
+        h1 {
+            color: #5e2b2b;
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #5e2b2b;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #5e2b2b;
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #7a3d3d;
+            font-size: 20px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        
+        .diagram {
+            background: #e9ecef;
+            border: 2px solid #5e2b2b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .pattern-box {
+            background: #f0f8ff;
+            border: 2px solid #4a90e2;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .pattern-box h3 {
+            color: #4a90e2;
+            margin-top: 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #5e2b2b;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #888;
+            font-size: 12px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- PÁGINA 1: CAPA -->
+<div class="page cover">
+    <h1>🛍️ PROJETO DRESSCODE</h1>
+    <h2>Sistema de Brechós Online</h2>
+    <div class="subtitle">Arquitetura MVC, Repository Pattern e Padrões GoF</div>
+    
+    <div class="team">
+        <strong>Equipe:</strong><br>
+        Maria Eduarda Oliveira - Líder/22301275<br>
+        Maria Eduarda Rosa - 22402080<br>
+        Kauan Alves Coelho - 22302255<br>
+        Giovana Tassi - 22403094<br>
+        Nicolas Peres - 22302409<br>
+        Moises - 22301313
+    </div>
+</div>
+
+<!-- PÁGINA 2: ÍNDICE -->
+<div class="page">
+    <h1>📑 Índice</h1>
+    
+    <ol style="font-size: 18px; line-height: 2.5;">
+        <li><strong>Visão Geral do Projeto</strong></li>
+        <li><strong>Arquitetura MVC</strong></li>
+        <li><strong>Repository Pattern</strong></li>
+        <li><strong>Padrões GoF Implementados</strong>
+            <ul>
+                <li>Singleton</li>
+                <li>Factory Method</li>
+                <li>Observer</li>
+                <li>Strategy + Decorator</li>
+            </ul>
+        </li>
+        <li><strong>Integração dos Padrões</strong></li>
+        <li><strong>Funcionalidades do Sistema</strong></li>
+        <li><strong>Estrutura de Diretórios</strong></li>
+        <li><strong>Conclusão</strong></li>
+    </ol>
+</div>
+
+<!-- PÁGINA 3: VISÃO GERAL -->
+<div class="page">
+    <h1>1. Visão Geral do Projeto</h1>
+    
+    <h2>O que é o DressCode?</h2>
+    <p>
+        O <strong>DressCode</strong> é um marketplace online especializado em brechós, conectando vendedores 
+        de roupas usadas e vintage com compradores interessados em moda sustentável e acessível.
+    </p>
+    
+    <h2>Objetivos do Sistema</h2>
+    <ul>
+        <li>Facilitar a compra e venda de roupas de segunda mão</li>
+        <li>Promover sustentabilidade e economia circular</li>
+        <li>Conectar brechós físicos com clientes online</li>
+        <li>Oferecer sistema de busca avançado e personalizado</li>
+        <li>Gerenciar pagamentos e notificações</li>
+    </ul>
+    
+    <h2>Tecnologias Utilizadas</h2>
+    <table>
+        <tr>
+            <th>Categoria</th>
+            <th>Tecnologia</th>
+        </tr>
+        <tr>
+            <td>Backend</td>
+            <td>PHP 7.4+</td>
+        </tr>
+        <tr>
+            <td>Banco de Dados</td>
+            <td>MySQL 8.0</td>
+        </tr>
+        <tr>
+            <td>Frontend</td>
+            <td>HTML5, CSS3, JavaScript</td>
+        </tr>
+        <tr>
+            <td>Arquitetura</td>
+            <td>MVC + Repository Pattern</td>
+        </tr>
+        <tr>
+            <td>Padrões de Projeto</td>
+            <td>Singleton, Factory, Observer, Strategy, Decorator</td>
+        </tr>
+    </table>
+    
+    <div class="highlight">
+        <strong>💡 Diferencial:</strong> O projeto implementa boas práticas de engenharia de software, 
+        utilizando padrões de projeto consolidados (GoF) para garantir código limpo, manutenível e escalável.
+    </div>
+</div>
+
+<!-- PÁGINA 4: ARQUITETURA MVC -->
+<div class="page">
+    <h1>2. Arquitetura MVC</h1>
+    
+    <h2>O que é MVC?</h2>
+    <p>
+        <strong>MVC (Model-View-Controller)</strong> é um padrão arquitetural que separa a aplicação em três 
+        componentes principais, promovendo a separação de responsabilidades e facilitando a manutenção.
+    </p>
+    
+    <div class="diagram">
+        <h3>Fluxo MVC no DressCode</h3>
+        <pre style="text-align: left; font-size: 16px;">
+┌─────────────┐
+│   USUÁRIO   │
+└──────┬──────┘
+       │ Requisição HTTP
+       ▼
+┌─────────────────────────────────────┐
+│         CONTROLLER                  │
+│  (ProductController.php)            │
+│  - Recebe requisição                │
+│  - Processa lógica de negócio       │
+│  - Chama Model/Repository           │
+└──────┬──────────────────────────────┘
+       │
+       ▼
+┌─────────────────────────────────────┐
+│         MODEL / REPOSITORY          │
+│  (Product.php, ProductRepository)   │
+│  - Acessa banco de dados            │
+│  - Aplica regras de negócio         │
+│  - Retorna dados                    │
+└──────┬──────────────────────────────┘
+       │
+       ▼
+┌─────────────────────────────────────┐
+│            VIEW                     │
+│  (products/category.php)            │
+│  - Renderiza HTML                   │
+│  - Exibe dados ao usuário           │
+└─────────────────────────────────────┘
+        </pre>
+    </div>
+    
+    <h2>Camadas no DressCode</h2>
+    
+    <h3>📁 Model (app/models/)</h3>
+    <p>
+        Representa os dados e a lógica de negócio. Exemplos: <code>Product.php</code>, <code>User.php</code>, 
+        <code>Brecho.php</code>. Responsável por interagir com o banco de dados e aplicar validações.
+    </p>
+    
+    <h3>🎮 Controller (app/controllers/)</h3>
+    <p>
+        Gerencia o fluxo da aplicação, recebe requisições do usuário e coordena Model e View. 
+        Exemplos: <code>ProductController.php</code>, <code>AuthController.php</code>.
+    </p>
+    
+    <h3>👁️ View (app/views/)</h3>
+    <p>
+        Camada de apresentação, responsável por renderizar HTML e exibir dados ao usuário. 
+        Exemplos: <code>products/category.php</code>, <code>dashboard.php</code>.
+    </p>
+</div>
+
+<!-- PÁGINA 5: REPOSITORY PATTERN -->
+<div class="page">
+    <h1>3. Repository Pattern</h1>
+    
+    <h2>Conceito</h2>
+    <p>
+        O <strong>Repository Pattern</strong> é um padrão que abstrai a camada de acesso a dados, 
+        criando uma interface entre a lógica de negócio e a fonte de dados. Ele centraliza as 
+        operações de banco de dados em classes específicas.
+    </p>
+    
+    <h2>Por que usar Repository?</h2>
+    <ul>
+        <li><strong>Separação de Responsabilidades:</strong> Isola a lógica de acesso a dados</li>
+        <li><strong>Testabilidade:</strong> Facilita a criação de testes unitários</li>
+        <li><strong>Manutenibilidade:</strong> Mudanças no banco não afetam controllers</li>
+        <li><strong>Reutilização:</strong> Queries complexas podem ser reutilizadas</li>
+        <li><strong>Abstração:</strong> Controllers não precisam conhecer SQL</li>
+    </ul>
+    
+    <h2>Implementação no DressCode</h2>
+    
+    <div class="code-block">
+// app/repositories/ProductRepository.php
+class ProductRepository {
+    private $pdo;
+    
+    public function __construct(PDO $pdo) {
+        $this->pdo = $pdo;
+    }
+    
+    public function findById($id) {
+        $stmt = $this->pdo->prepare("SELECT * FROM produtos WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    public function search($filters) {
+        // Lógica complexa de busca
+    }
+}
+    </div>
+    
+    <h2>Repositórios Implementados</h2>
+    <table>
+        <tr>
+            <th>Repository</th>
+            <th>Responsabilidade</th>
+        </tr>
+        <tr>
+            <td>ProductRepository</td>
+            <td>Gerencia produtos, buscas, favoritos</td>
+        </tr>
+        <tr>
+            <td>CategoryRepository</td>
+            <td>Gerencia categorias de produtos</td>
+        </tr>
+        <tr>
+            <td>TermoRepository</td>
+            <td>Gerencia termos de aceite</td>
+        </tr>
+    </table>
+    
+    <div class="highlight">
+        <strong>✅ Benefício:</strong> O controller não precisa saber SQL, apenas chama métodos 
+        do repository como <code>findById()</code> ou <code>search()</code>.
+    </div>
+</div>
+
+<!-- PÁGINA 6: SINGLETON PATTERN -->
+<div class="page">
+    <h1>4. Padrões GoF - Singleton</h1>
+    
+    <div class="pattern-box">
+        <h3>🔧 Singleton Pattern</h3>
+        <p><strong>Categoria:</strong> Criacional</p>
+        <p><strong>Objetivo:</strong> Garantir que uma classe tenha apenas uma instância e fornecer um ponto global de acesso a ela.</p>
+    </div>
+    
+    <h2>Onde foi aplicado?</h2>
+    <p>
+        <strong>Arquivo:</strong> <code>app/config/DatabaseConnection.php</code><br>
+        <strong>Uso:</strong> Conexão única com o banco de dados MySQL
+    </p>
+    
+    <h2>Por que usar Singleton para conexão de banco?</h2>
+    <ul>
+        <li><strong>Performance:</strong> Evita criar múltiplas conexões desnecessárias</li>
+        <li><strong>Recursos:</strong> Economiza memória e conexões do banco</li>
+        <li><strong>Consistência:</strong> Todas as operações usam a mesma configuração</li>
+        <li><strong>Controle:</strong> Ponto único para gerenciar a conexão</li>
+    </ul>
+    
+    <h2>Implementação</h2>
+    <div class="code-block">
+class DatabaseConnection {
+    private static ?PDO $instance = null;
+    
+    // Construtor privado - impede new DatabaseConnection()
+    private function __construct() {}
+    
+    // Impede clonagem
+    private function __clone() {}
+    
+    // Método público para obter a instância
+    public static function getInstance(): PDO {
+        if (self::$instance === null) {
+            self::initializeConnection();
+        }
+        return self::$instance;
+    }
+    
+    private static function initializeConnection(): void {
+        self::$instance = new PDO(
+            "mysql:host=localhost;dbname=dresscode",
+            "root",
+            ""
+        );
+    }
+}
+    </div>
+    
+    <h2>Como é usado no projeto?</h2>
+    <div class="code-block">
+// Em qualquer lugar do código
+$db = DatabaseConnection::getInstance();
+$repository = new ProductRepository($db);
+    </div>
+    
+    <div class="highlight">
+        <strong>✅ Resultado:</strong> Apenas uma conexão PDO é criada durante toda a execução, 
+        melhorando performance e reduzindo uso de recursos.
+    </div>
+</div>
+
+<!-- PÁGINA 7: FACTORY METHOD PATTERN -->
+<div class="page">
+    <h1>4. Padrões GoF - Factory Method</h1>
+    
+    <div class="pattern-box">
+        <h3>🏭 Factory Method Pattern</h3>
+        <p><strong>Categoria:</strong> Criacional</p>
+        <p><strong>Objetivo:</strong> Definir uma interface para criar objetos, mas deixar as subclasses decidirem qual classe instanciar.</p>
+    </div>
+    
+    <h2>Onde foi aplicado?</h2>
+    <p>
+        <strong>Arquivo:</strong> <code>app/factories/ProductFactory.php</code><br>
+        <strong>Uso:</strong> Criação de diferentes tipos de produtos
+    </p>
+    
+    <h2>Tipos de Produtos Suportados</h2>
+    <table>
+        <tr>
+            <th>Tipo</th>
+            <th>Desconto</th>
+            <th>Garantia</th>
+            <th>Prioridade</th>
+        </tr>
+        <tr>
+            <td>Novo</td>
+            <td>0%</td>
+            <td>Sim</td>
+            <td>Alta</td>
+        </tr>
+        <tr>
+            <td>Usado</td>
+            <td>10%</td>
+            <td>Não</td>
+            <td>Média</td>
+        </tr>
+        <tr>
+            <td>Promocional</td>
+            <td>20%</td>
+            <td>Sim</td>
+            <td>Máxima</td>
+        </tr>
+        <tr>
+            <td>Vintage</td>
+            <td>0%</td>
+            <td>Não</td>
+            <td>Alta</td>
+        </tr>
+    </table>
+    
+    <h2>Implementação</h2>
+    <div class="code-block">
+abstract class ProductFactory {
+    public static function createProduct(array $data): Product {
+        $condicao = $data['condicao'] ?? 'usado';
+        
+        switch (strtolower($condicao)) {
+            case 'novo':
+                return self::createNewProduct($data);
+            case 'usado':
+                return self::createUsedProduct($data);
+            case 'promocional':
+                return self::createPromotionalProduct($data);
+            case 'vintage':
+                return self::createVintageProduct($data);
+        }
+    }
+    
+    private static function createNewProduct($data): Product {
+        $product = new Product();
+        $product->setData($data);
+        $product->setDesconto(0);
+        $product->setGarantia(true);
+        return $product;
+    }
+}
+    </div>
+    
+    <div class="highlight">
+        <strong>✅ Benefício:</strong> Adicionar novos tipos de produtos é simples, sem modificar código existente.
+    </div>
+</div>
+
+</body>
+</html>
