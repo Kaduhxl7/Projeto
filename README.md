@@ -216,8 +216,8 @@ bash setup.sh
 - ✅ Exibe informações de acesso
 
 ### Acesso:
-- 🌐 **URL:** http://localhost:8000
-- 🔐 **Login de teste:** teste@dresscode.com / 123456
+-  **URL:** http://localhost:8000
+-  **Login de teste:** teste@dresscode.com / 123456
 
 ### Execução Manual (se necessário):
 ```bash
@@ -233,4 +233,4 @@ php -S localhost:8000
 
 ---
 
-🛠️ **Estrutura do projeto atualizada automaticamente para refletir a versão mais recente do código local.**
+ **Estrutura do projeto atualizada automaticamente para refletir a versão mais recente do código local.**
